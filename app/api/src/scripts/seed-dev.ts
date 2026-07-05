@@ -59,7 +59,7 @@ async function main(): Promise<void> {
         number: 9001,
         title: "[DEV] Headcount by Department",
         statementMd:
-          "Count employees per department.\n\nReturn two columns: `deptno`, `headcount`, ordered by `deptno`.\n\n_Dev seed problem — will be removed._",
+          "Count employees per department.\n\nReturn two columns: `deptno`, `headcount`, ordered by `deptno`.\n\n_Dev seed problem - will be removed._",
         belt: "white",
         category: "sql",
         universe: "",

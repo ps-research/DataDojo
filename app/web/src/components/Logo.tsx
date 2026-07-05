@@ -1,4 +1,4 @@
-// A flat, geometric mark — a rounded tile with three data rows. No brushwork,
+// A flat, geometric mark - a rounded tile with three data rows. No brushwork,
 // no theming. Reads as "data" and stays out of the way.
 export function Logo({ className = "h-7 w-7" }: { className?: string }) {
   return (

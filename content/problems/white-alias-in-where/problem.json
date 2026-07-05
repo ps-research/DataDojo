@@ -1,0 +1,15 @@
+{
+  "slug": "white-alias-in-where",
+  "universe": "",
+  "belt": "white",
+  "title": "Filter on a Column Alias",
+  "concepts": ["column-alias", "derived-table", "where", "logical-query-processing"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.6",
+  "landmines": [],
+  "learn": {"recipe": "1.6", "concepts": ["logical processing order (WHERE before SELECT)", "derived table / inline view", "referencing an alias"]},
+  "notes": "Because WHERE is logically evaluated before the SELECT list, an alias cannot be used in the same query's WHERE. Wrapping in a derived table exposes the alias. salary < 5000 excludes only KING (5000), leaving 13 rows. Row order unspecified, judged as an unordered bag."
+}

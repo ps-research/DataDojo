@@ -1,0 +1,30 @@
+{
+  "slug": "white-sum",
+  "universe": "",
+  "belt": "white",
+  "title": "Summing a Column",
+  "concepts": [
+    "aggregate",
+    "sum"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.3",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.3",
+    "concepts": [
+      "aggregate",
+      "sum"
+    ]
+  },
+  "notes": "SUM ignores NULLs. Aliased as total_sal so the output column name is portable (an unaliased SUM(sal) has engine-specific column naming)."
+}

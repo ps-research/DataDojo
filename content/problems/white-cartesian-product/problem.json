@@ -1,0 +1,32 @@
+{
+  "slug": "white-cartesian-product",
+  "universe": "",
+  "belt": "white",
+  "title": "Avoiding an Accidental Cartesian Product",
+  "concepts": [
+    "inner-join",
+    "join-predicate",
+    "cartesian-product"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.8",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.8",
+    "concepts": [
+      "inner-join",
+      "join-predicate",
+      "cartesian-product"
+    ]
+  },
+  "notes": "Comma-join with an explicit deptno = deptno predicate. Without the predicate the query fans out into a Cartesian product."
+}

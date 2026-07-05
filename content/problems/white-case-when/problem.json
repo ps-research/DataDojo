@@ -1,0 +1,15 @@
+{
+  "slug": "white-case-when",
+  "universe": "",
+  "belt": "white",
+  "title": "Label Rows with CASE",
+  "concepts": ["case-expression", "conditional-logic", "projection"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.8",
+  "landmines": [],
+  "learn": {"recipe": "1.8", "concepts": ["CASE WHEN ... THEN ... ELSE ... END", "first-match evaluation", "derived label column"]},
+  "notes": "CASE conditional logic. Branches are evaluated top-down; the first true WHEN wins. On the canonical data no salary reaches 4000 except KING (5000 -> OVERPAID); the rest split into UNDERPAID (<= 2000) and OK. Row order unspecified, judged as an unordered bag."
+}

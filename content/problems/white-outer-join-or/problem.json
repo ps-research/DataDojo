@@ -1,0 +1,18 @@
+{
+  "slug": "white-outer-join-or",
+  "universe": "",
+  "belt": "white",
+  "title": "OR Logic in an Outer Join",
+  "concepts": ["left-join", "outer-join", "on-clause-predicate", "or-logic"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "11.3",
+  "landmines": [],
+  "learn": {
+    "recipe": "11.3",
+    "concepts": ["left-join", "outer-join", "on-clause-predicate", "or-logic"]
+  },
+  "notes": "Where a predicate on the outer (right-hand) table lives decides the result. Put (e.deptno = 10 OR e.deptno = 20) in the ON clause and it only restricts which employees match; every department still survives the LEFT JOIN, with NULL employee fields where nobody matched. Put the same OR in WHERE and it discards the unmatched department rows (whose e.deptno is NULL), quietly turning the outer join back into an inner join."
+}

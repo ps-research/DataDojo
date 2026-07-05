@@ -1,0 +1,33 @@
+{
+  "slug": "white-sort-data-dependent",
+  "universe": "",
+  "belt": "white",
+  "title": "Sort by a Value That Depends on the Row",
+  "concepts": [
+    "order-by",
+    "case-expression",
+    "conditional-sort"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "2.6",
+  "landmines": [],
+  "learn": {
+    "recipe": "2.6",
+    "concepts": [
+      "order-by",
+      "case-expression",
+      "conditional-sort",
+      "null-ordering"
+    ]
+  },
+  "notes": "Reference wraps the recipe's CASE sort key with a portable NULL-last flag (a salesman's comm may be missing at hidden scale, and default NULL sort position is not portable) and adds empno as a final tie-breaker for determinism. On the canonical data no key is null, so output matches the recipe."
+}

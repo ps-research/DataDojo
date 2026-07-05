@@ -1,0 +1,30 @@
+{
+  "slug": "white-average",
+  "universe": "",
+  "belt": "white",
+  "title": "Computing an Average",
+  "concepts": [
+    "aggregate",
+    "avg"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.1",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.1",
+    "concepts": [
+      "aggregate",
+      "avg"
+    ]
+  },
+  "notes": "AVG ignores NULLs. mssql AVG over an INTEGER column performs integer division (returning 2073); reference.mssql.sql casts sal to FLOAT so the fractional average agrees with the other engines."
+}

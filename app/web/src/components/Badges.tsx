@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-// Belts as clean colored labels — white through red, red the highest.
+// Belts as clean colored labels - white through red, red the highest.
 export const BELT_META: Record<string, { label: string; text: string }> = {
   white: { label: "White", text: "text-zinc-500 dark:text-zinc-400" },
   blue: { label: "Blue", text: "text-sky-600 dark:text-sky-400" },
@@ -23,7 +23,7 @@ const VERDICT_STYLE: Record<string, string> = {
 };
 
 export function VerdictBadge({ verdict }: { verdict: string | null }) {
-  if (!verdict) return <span className="text-xs text-zinc-400">—</span>;
+  if (!verdict) return <span className="text-xs text-zinc-400">-</span>;
   return (
     <span className={`inline-block rounded-md px-1.5 py-0.5 font-mono text-xs font-semibold ${VERDICT_STYLE[verdict] ?? ""}`}>
       {verdict}

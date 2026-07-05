@@ -1,0 +1,18 @@
+{
+  "slug": "white-avg-nullable",
+  "universe": "",
+  "belt": "white",
+  "title": "Averaging a Nullable Column",
+  "concepts": ["avg", "coalesce", "null-awareness", "aggregate"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.12",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.12",
+    "concepts": ["avg", "coalesce", "null-awareness", "aggregate"]
+  },
+  "notes": "AVG ignores NULLs: it divides the sum by the count of non-NULL values only. When NULL should count as zero (an employee earning no commission), wrap the column in COALESCE(comm, 0) so the NULLs become zeros and enter both the numerator (as 0) and the denominator (as a counted row), lowering the average."
+}

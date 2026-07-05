@@ -1,0 +1,31 @@
+{
+  "slug": "white-like-patterns",
+  "universe": "",
+  "belt": "white",
+  "title": "Filter Names and Jobs by Pattern",
+  "concepts": [
+    "pattern-matching",
+    "like",
+    "boolean-logic"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.13",
+  "landmines": [],
+  "learn": {
+    "recipe": "1.13",
+    "concepts": [
+      "pattern-matching",
+      "like-wildcards",
+      "and-or-precedence"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "slug": "white-anti-join",
+  "universe": "",
+  "belt": "white",
+  "title": "Departments With No Employees",
+  "concepts": [
+    "outer-join",
+    "anti-join",
+    "null-filter"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.5",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.5",
+    "concepts": [
+      "outer-join",
+      "anti-join",
+      "null-filter"
+    ]
+  },
+  "notes": "Anti-join via LEFT OUTER JOIN + IS NULL. On the scaled hidden fixture every department is staffed, so the correct result is the empty set; hardcoding the visible OPERATIONS row therefore fails the hidden fixture."
+}

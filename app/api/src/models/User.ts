@@ -6,6 +6,7 @@ export interface UserDoc extends Document {
   email: string;
   passwordHash: string;
   role: "user" | "admin";
+  emailVerified: boolean;
   solvedCount: number;
   score: number;
   setPassword(plain: string): Promise<void>;
@@ -19,6 +20,7 @@ const userSchema = new Schema<UserDoc>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    emailVerified: { type: Boolean, default: false },
     solvedCount: { type: Number, default: 0 },
     score: { type: Number, default: 0 },
   },

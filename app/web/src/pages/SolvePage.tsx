@@ -248,7 +248,7 @@ export function SolvePage() {
         <button
           onClick={() => setFocus(!focus)}
           className="btn-ghost h-8 w-8 justify-center p-0"
-          title={focus ? "Exit focus mode (Esc)" : "Focus mode — just you and the editor"}
+          title={focus ? "Exit focus mode (Esc)" : "Focus mode - just you and the editor"}
         >
           {focus ? <CollapseIcon /> : <ExpandIcon />}
         </button>

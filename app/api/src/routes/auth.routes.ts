@@ -5,15 +5,23 @@ import { User } from "../models/User.js";
 import { ApiError, asyncHandler } from "../middleware/error.js";
 import { requireAuth, signAccessToken, signRefreshToken, type AuthedRequest } from "../middleware/auth.js";
 import { env } from "../config/env.js";
+import { isTrustedEmailDomain, TRUSTED_DOMAINS_HINT } from "../config/trusted-domains.js";
+import { issueOtp, canResend, verifyOtp } from "../services/otp.js";
+import { mailerConfigured } from "../services/mailer.js";
 
 const router = Router();
 
 const signupSchema = z.object({
   name: z.string().min(1, "Name is required").max(60),
-  email: z.string().email("Valid email required"),
+  email: z
+    .string()
+    .email("Valid email required")
+    .refine(isTrustedEmailDomain, `Please use a trusted email provider. ${TRUSTED_DOMAINS_HINT}`),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
+const otpSchema = z.object({ email: z.string().email(), code: z.string().length(6, "Enter the 6-digit code") });
+const emailSchema = z.object({ email: z.string().email() });
 
 const refreshCookieOpts = {
   httpOnly: true,
@@ -33,10 +41,17 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name, email, password } = signupSchema.parse(req.body);
     if (await User.findOne({ email })) throw new ApiError(409, "Email already registered");
-    const user = new User({ name, email });
+    // If email delivery isn't configured, don't trap users behind a code that
+    // never arrives - verify immediately. OTP activates the moment SMTP is set.
+    const user = new User({ name, email, emailVerified: !mailerConfigured });
     await user.setPassword(password);
     await user.save();
-    res.status(201).json({ accessToken: issueTokens(res, user), user: user.toPublic() });
+    if (!mailerConfigured) {
+      res.status(201).json({ accessToken: issueTokens(res, user), user: user.toPublic() });
+      return;
+    }
+    await issueOtp(String(user._id), email, name);
+    res.status(201).json({ needsVerification: true, email });
   })
 );
 
@@ -46,7 +61,47 @@ router.post(
     const { email, password } = loginSchema.parse(req.body);
     const user = await User.findOne({ email });
     if (!user || !(await user.verifyPassword(password))) throw new ApiError(401, "Invalid email or password");
+    if (mailerConfigured && !user.emailVerified) {
+      // send a fresh code and route the client to verification
+      if (!(await canResend(String(user._id)))) await issueOtp(String(user._id), email, user.name);
+      res.status(403).json({ needsVerification: true, email });
+      return;
+    }
     res.json({ accessToken: issueTokens(res, user), user: user.toPublic() });
+  })
+);
+
+router.post(
+  "/verify-otp",
+  asyncHandler(async (req, res) => {
+    const { email, code } = otpSchema.parse(req.body);
+    const user = await User.findOne({ email });
+    if (!user) throw new ApiError(404, "Account not found");
+    if (user.emailVerified) return res.json({ accessToken: issueTokens(res, user), user: user.toPublic() });
+
+    const result = await verifyOtp(String(user._id), code);
+    if (result === "too_many") throw new ApiError(429, "Too many attempts. Request a new code.");
+    if (result === "expired") throw new ApiError(410, "Code expired. Request a new one.");
+    if (result === "mismatch") throw new ApiError(400, "Incorrect code. Try again.");
+
+    user.emailVerified = true;
+    await user.save();
+    res.json({ accessToken: issueTokens(res, user), user: user.toPublic() });
+  })
+);
+
+router.post(
+  "/resend-otp",
+  asyncHandler(async (req, res) => {
+    const { email } = emailSchema.parse(req.body);
+    const user = await User.findOne({ email });
+    // Do not leak which emails exist; always answer 200.
+    if (user && !user.emailVerified) {
+      const wait = await canResend(String(user._id));
+      if (wait > 0) return res.status(200).json({ ok: true, retryAfter: wait });
+      await issueOtp(String(user._id), email, user.name);
+    }
+    res.status(200).json({ ok: true });
   })
 );
 

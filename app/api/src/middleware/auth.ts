@@ -24,7 +24,7 @@ export function signRefreshToken(user: UserDoc): string {
 function extractToken(req: Request): string | null {
   const header = req.headers.authorization ?? "";
   if (header.startsWith("Bearer ")) return header.slice(7);
-  // SSE (EventSource) cannot set headers — allow query token there only.
+  // SSE (EventSource) cannot set headers - allow query token there only.
   if (req.path.endsWith("/stream") && typeof req.query.token === "string") return req.query.token;
   return null;
 }

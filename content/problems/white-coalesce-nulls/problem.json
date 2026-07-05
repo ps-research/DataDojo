@@ -1,0 +1,30 @@
+{
+  "slug": "white-coalesce-nulls",
+  "universe": "",
+  "belt": "white",
+  "title": "Turn Missing Commissions Into Zero",
+  "concepts": [
+    "null-handling",
+    "coalesce"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.12",
+  "landmines": [],
+  "learn": {
+    "recipe": "1.12",
+    "concepts": [
+      "null-handling",
+      "coalesce",
+      "default-values"
+    ]
+  }
+}

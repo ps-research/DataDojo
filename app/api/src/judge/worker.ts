@@ -61,7 +61,7 @@ async function runDuckdb(fixture: string, code: string): Promise<ResultSet> {
   try {
     const result = engine === "sqlite" ? await runSqlite(fixture, code) : await runDuckdb(fixture, code);
     // BigInt/Date cannot cross the thread boundary via postMessage cloning of
-    // arbitrary types reliably in all cases — stringify defensively.
+    // arbitrary types reliably in all cases - stringify defensively.
     parentPort!.postMessage({
       ok: true,
       result: {

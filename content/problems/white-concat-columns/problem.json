@@ -1,0 +1,15 @@
+{
+  "slug": "white-concat-columns",
+  "universe": "",
+  "belt": "white",
+  "title": "Build a Sentence by Concatenating Columns",
+  "concepts": ["string-concatenation", "concat-function", "projection", "where"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.7",
+  "landmines": [],
+  "learn": {"recipe": "1.7", "concepts": ["CONCAT() function", "string literals in the select list", "portable vs || operator"]},
+  "notes": "String concatenation. The recipe's original || operator is not portable to MySQL/SQL Server; CONCAT(...) is used as the portable equivalent (verified in this codebase's SQLite references). Single output column msg, three rows for department 10. Row order unspecified, judged as an unordered bag."
+}

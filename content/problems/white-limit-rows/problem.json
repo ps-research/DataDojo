@@ -1,0 +1,15 @@
+{
+  "slug": "white-limit-rows",
+  "universe": "",
+  "belt": "white",
+  "title": "Cap the Number of Rows with LIMIT",
+  "concepts": ["limit", "row-cap", "order-by", "determinism"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.9",
+  "landmines": [],
+  "learn": {"recipe": "1.9", "concepts": ["LIMIT clause", "ORDER BY for a deterministic top-n", "why LIMIT without ORDER BY is unstable"]},
+  "notes": "LIMIT n. The recipe leaves order unspecified ('any n rows'); to make the result deterministic and identical across engines we ORDER BY empno, so orderMatters is true. mssql is omitted from engines because LIMIT is not part of its dialect (it uses TOP or OFFSET/FETCH); the other four engines all support ORDER BY ... LIMIT."
+}

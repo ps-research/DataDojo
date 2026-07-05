@@ -1,0 +1,33 @@
+{
+  "slug": "white-count-occurrences",
+  "universe": "",
+  "belt": "white",
+  "title": "Counting a Character Inside a String",
+  "concepts": [
+    "string-functions",
+    "replace",
+    "length",
+    "arithmetic"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "6.3",
+  "landmines": [],
+  "learn": {
+    "recipe": "6.3",
+    "concepts": [
+      "string-functions",
+      "replace",
+      "length"
+    ]
+  },
+  "notes": "LENGTH(original) - LENGTH(REPLACE(original, needle, '')), divided by LENGTH(needle), counts occurrences. mssql uses LEN in place of LENGTH (see reference.mssql.sql); LEN is safe here because the literal has no trailing spaces."
+}

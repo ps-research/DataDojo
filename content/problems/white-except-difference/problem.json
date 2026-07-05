@@ -1,0 +1,32 @@
+{
+  "slug": "white-except-difference",
+  "universe": "",
+  "belt": "white",
+  "title": "Departments With No Employees",
+  "concepts": [
+    "except",
+    "set-difference",
+    "set-operators"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.4",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.4",
+    "concepts": [
+      "except",
+      "set-difference",
+      "set-operators"
+    ]
+  },
+  "notes": "reference.mysql.sql uses NOT EXISTS (no NULL trap: emp.deptno is never null in this world) because EXCEPT requires MySQL 8.0.31+. EXCEPT dedups but dept.deptno is already unique, so the NOT EXISTS form is equivalent."
+}

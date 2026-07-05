@@ -1,0 +1,18 @@
+{
+  "slug": "white-count-rows",
+  "universe": "",
+  "belt": "white",
+  "title": "Counting the Rows in a Table",
+  "concepts": ["count-star", "aggregate"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.4",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.4",
+    "concepts": ["count-star", "aggregate"]
+  },
+  "notes": "COUNT(*) counts every row, including rows that are all-or-partly NULL. It is distinct from COUNT(col), which counts only the non-NULL values of a single column."
+}

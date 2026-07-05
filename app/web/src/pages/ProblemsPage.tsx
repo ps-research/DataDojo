@@ -109,7 +109,7 @@ export function ProblemsPage() {
                 {p.solved ? (
                   <span className="text-emerald-500" title="Solved"><CheckIcon /></span>
                 ) : p.locked ? (
-                  <span className="text-zinc-400" title="Locked — solve its prerequisite first"><LockIcon /></span>
+                  <span className="text-zinc-400" title="Locked - solve its prerequisite first"><LockIcon /></span>
                 ) : (
                   <span className="font-mono text-xs text-zinc-300 dark:text-zinc-600">{p.number}</span>
                 )}

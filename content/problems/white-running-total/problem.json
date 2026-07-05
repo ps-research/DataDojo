@@ -1,0 +1,18 @@
+{
+  "slug": "white-running-total",
+  "universe": "",
+  "belt": "white",
+  "title": "Building a Running Total",
+  "concepts": ["window-function", "running-total", "sum-over", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.6",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.6",
+    "concepts": ["window-function", "running-total", "sum-over", "order-by"]
+  },
+  "notes": "SUM(sal) OVER (ORDER BY sal, empno) is a windowed aggregate: it sums every row from the first up to and including the current row in the given order. The ORDER BY inside OVER defines the accumulation order; empno breaks salary ties so the running total is deterministic."
+}

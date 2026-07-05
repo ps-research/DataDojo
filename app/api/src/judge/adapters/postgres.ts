@@ -3,7 +3,7 @@ import { env } from "../../config/env.js";
 import type { EngineAdapter, RunResult } from "../../types.js";
 
 // Every run: one transaction, always rolled back; statement_timeout yields TLE.
-// pg returns dates/numerics as strings by default in many cases — the
+// pg returns dates/numerics as strings by default in many cases - the
 // normalizer handles unification, so we pass values through untouched.
 
 let pool: pg.Pool | null = null;

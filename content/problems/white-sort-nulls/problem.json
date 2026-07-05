@@ -1,0 +1,33 @@
+{
+  "slug": "white-sort-nulls",
+  "universe": "",
+  "belt": "white",
+  "title": "Sort Commissions With Nulls Last",
+  "concepts": [
+    "order-by",
+    "null-ordering",
+    "case-expression"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "2.5",
+  "landmines": [],
+  "learn": {
+    "recipe": "2.5",
+    "concepts": [
+      "order-by",
+      "null-ordering",
+      "case-expression",
+      "portability"
+    ]
+  },
+  "notes": "Recipe 2.5 relies on each engine's default NULL sort position, which is not portable (Postgres/DuckDB/Oracle default NULLS LAST, SQLite/MySQL NULLS FIRST) and MySQL lacks the NULLS LAST keyword. Reference pins NULLs last portably with a CASE flag and adds ename as a tie-breaker among the nulls for determinism."
+}

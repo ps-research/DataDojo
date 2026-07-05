@@ -1,0 +1,10 @@
+{
+  "visible": {
+    "seed": 0,
+    "scale": "canonical"
+  },
+  "hidden": {
+    "seed": 111,
+    "scale": "white"
+  }
+}

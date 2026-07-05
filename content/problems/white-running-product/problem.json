@@ -1,0 +1,18 @@
+{
+  "slug": "white-running-product",
+  "universe": "",
+  "belt": "white",
+  "title": "Building a Running Product",
+  "concepts": ["window-function", "running-product", "logarithms", "exp-ln"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.7",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.7",
+    "concepts": ["window-function", "running-product", "logarithms", "exp-ln"]
+  },
+  "notes": "There is no PRODUCT() window aggregate, so the product is built from a running SUM of logarithms: EXP(SUM(LN(x))) equals the product of the x values, because ln(a*b) = ln(a)+ln(b). EXP/LN reintroduce tiny floating error, so the result is ROUNDed to 2 decimals to recover the exact product. MSSQL has no LN(); reference.mssql.sql uses LOG(), which is the natural log in SQL Server."
+}

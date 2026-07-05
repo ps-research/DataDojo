@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 // Deliberately small markdown renderer (headings, bold/italic/code, fenced
-// blocks, tables, lists) — enough for problem statements, zero dependencies,
+// blocks, tables, lists) - enough for problem statements, zero dependencies,
 // and output is escaped before markup is applied.
 
 function escapeHtml(s: string): string {

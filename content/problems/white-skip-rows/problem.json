@@ -1,0 +1,18 @@
+{
+  "slug": "white-skip-rows",
+  "universe": "",
+  "belt": "white",
+  "title": "Returning Every Other Row",
+  "concepts": ["row-number", "window-function", "modulo", "subquery"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "11.2",
+  "landmines": [],
+  "learn": {
+    "recipe": "11.2",
+    "concepts": ["row-number", "window-function", "modulo", "subquery"]
+  },
+  "notes": "SQL rows have no inherent position, so ROW_NUMBER() OVER (ORDER BY ename) manufactures one deterministically. Keeping the odd row numbers (rn % 2 = 1) returns every other row: the 1st, 3rd, 5th and so on. The % modulo operator is portable across all five engines; MOD() is not (SQL Server lacks it)."
+}

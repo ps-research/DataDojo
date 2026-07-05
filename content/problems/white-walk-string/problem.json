@@ -1,0 +1,33 @@
+{
+  "slug": "white-walk-string",
+  "universe": "",
+  "belt": "white",
+  "title": "Walking a String Character by Character",
+  "concepts": [
+    "string-functions",
+    "substr",
+    "pivot-table",
+    "cross-join"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "6.1",
+  "landmines": [],
+  "learn": {
+    "recipe": "6.1",
+    "concepts": [
+      "string-functions",
+      "substr",
+      "pivot-table"
+    ]
+  },
+  "notes": "Walks a string by cross-joining it to pivot table t10 and slicing one character per position with SUBSTR/LENGTH. mssql uses SUBSTRING/LEN (see reference.mssql.sql). Grading is by multiset because the scaled hidden fixture may contain more than one employee named KING."
+}

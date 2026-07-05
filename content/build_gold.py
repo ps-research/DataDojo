@@ -138,6 +138,11 @@ def verify_reference(fixture_sql: str, reference_sql: str) -> tuple[bool, str, i
 POINTS = {"white": 10, "blue": 20, "purple": 40, "black": 70, "red": 120}
 
 
+def no_dashes(text: str) -> str:
+    # user rule: no em/en dashes anywhere user-facing
+    return text.replace(" — ", " - ").replace(" – ", " - ").replace("—", "-").replace("–", "-")
+
+
 def main() -> None:
     problems = []
     report = {"total": 0, "verified": 0, "fixture_fail": 0, "reference_fail": 0, "exceptions": []}
@@ -185,8 +190,8 @@ def main() -> None:
             problems.append({
                 "slug": meta["slug"],
                 "number": number,
-                "title": meta["title"],
-                "statementMd": statement,
+                "title": no_dashes(meta["title"]),
+                "statementMd": no_dashes(statement),
                 "belt": meta.get("belt", "white"),
                 "category": meta.get("category", "sql"),
                 "universe": universe,

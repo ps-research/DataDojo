@@ -1,0 +1,32 @@
+{
+  "slug": "white-sort-by-substring",
+  "universe": "",
+  "belt": "white",
+  "title": "Sort Jobs by Their Last Two Letters",
+  "concepts": [
+    "order-by",
+    "substring",
+    "expression-sort"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql"
+  ],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "2.3",
+  "landmines": [],
+  "learn": {
+    "recipe": "2.3",
+    "concepts": [
+      "order-by",
+      "substr",
+      "length",
+      "expression-sort"
+    ]
+  },
+  "notes": "ename added as ORDER BY tie-breaker for determinism (jobs repeat, so the suffix key ties). mssql excluded: it uses SUBSTRING/LEN instead of SUBSTR/LENGTH, so the reference is not portable to it."
+}

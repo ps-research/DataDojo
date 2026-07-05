@@ -1,0 +1,32 @@
+{
+  "slug": "white-union-all-stack",
+  "universe": "",
+  "belt": "white",
+  "title": "Stack Employees and Departments Together",
+  "concepts": [
+    "union-all",
+    "set-operators",
+    "column-compatibility"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.1",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.1",
+    "concepts": [
+      "union-all",
+      "set-operators",
+      "union-vs-union-all"
+    ]
+  },
+  "notes": "orderMatters=false: UNION ALL does not guarantee ordering between or within branches across engines, so the result is judged as a bag. The literal NULL in the separator branch takes the integer type of deptno from the other branches on every target engine."
+}

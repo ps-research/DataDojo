@@ -1,0 +1,18 @@
+{
+  "slug": "white-trimmed-mean",
+  "universe": "",
+  "belt": "white",
+  "title": "Averaging Without the Highest and Lowest Values",
+  "concepts": ["avg", "subquery", "min-max", "not-in", "trimmed-mean"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.13",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.13",
+    "concepts": ["avg", "subquery", "min-max", "not-in", "trimmed-mean"]
+  },
+  "notes": "A trimmed mean drops the extremes before averaging. Scalar subqueries supply MIN(sal) and MAX(sal); NOT IN filters out every row at either extreme, then AVG runs over what remains. NOT IN is safe here because sal is non-nullable and MIN/MAX of a non-empty column are never NULL; with a nullable list NOT IN can wrongly return no rows."
+}

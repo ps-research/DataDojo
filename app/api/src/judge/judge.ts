@@ -21,7 +21,7 @@ export async function judgeSubmission(
     console.error(`[judge] reference failed for engine=${variant.engine}:`, "error" in expected ? expected.error : "timeout");
     return {
       verdict: "RE",
-      message: "Judge configuration error — this is on us, not you. The problem has been flagged.",
+      message: "Judge configuration error - this is on us, not you. The problem has been flagged.",
       runtimeMs: 0,
       rowsReturned: 0,
     };
@@ -52,10 +52,10 @@ export async function judgeSubmission(
   return {
     verdict: pass ? "AC" : "WA",
     message: pass
-      ? "Accepted — all checks passed."
+      ? "Accepted - all checks passed."
       : expected.result.rows.length === actual.result.rows.length
-        ? `Wrong answer — row count matches (${actual.result.rows.length}) but values differ.`
-        : `Wrong answer — expected ${expected.result.rows.length} row(s), got ${actual.result.rows.length}.`,
+        ? `Wrong answer - row count matches (${actual.result.rows.length}) but values differ.`
+        : `Wrong answer - expected ${expected.result.rows.length} row(s), got ${actual.result.rows.length}.`,
     runtimeMs,
     rowsReturned: actual.result.rows.length,
   };

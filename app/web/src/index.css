@@ -34,7 +34,7 @@
   .link { @apply text-brand hover:underline; }
 }
 
-/* Markdown statement rendering — clean, readable */
+/* Markdown statement rendering - clean, readable */
 .statement { @apply text-sm leading-relaxed text-zinc-700 dark:text-zinc-300; }
 .statement h1, .statement h2, .statement h3 { @apply mt-5 mb-2 font-semibold text-zinc-900 dark:text-zinc-100; }
 .statement h1 { @apply text-lg; }

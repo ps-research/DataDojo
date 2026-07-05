@@ -1,0 +1,32 @@
+{
+  "slug": "white-sort-multiple-fields",
+  "universe": "",
+  "belt": "white",
+  "title": "Sort by Department, Then Salary",
+  "concepts": [
+    "order-by",
+    "multi-key-sort",
+    "tie-breaking"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "2.2",
+  "landmines": [],
+  "learn": {
+    "recipe": "2.2",
+    "concepts": [
+      "order-by",
+      "multi-key-sort",
+      "tie-breaking"
+    ]
+  },
+  "notes": "empno added as a final ORDER BY tie-breaker so the ordered output is deterministic across engines and at hidden scale (deptno,sal alone leave salary ties unordered). Reference is the recipe's sort plus that tie-breaker; semantics unchanged for non-tied rows."
+}

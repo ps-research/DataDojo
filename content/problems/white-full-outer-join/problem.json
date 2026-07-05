@@ -1,0 +1,33 @@
+{
+  "slug": "white-full-outer-join",
+  "universe": "",
+  "belt": "white",
+  "title": "Full Outer Join: Keep Both Sides",
+  "concepts": [
+    "outer-join",
+    "full-outer-join",
+    "union",
+    "null-handling"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.11",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.11",
+    "concepts": [
+      "outer-join",
+      "full-outer-join",
+      "union"
+    ]
+  },
+  "notes": "Portable FULL OUTER JOIN emulation: UNION of two LEFT JOINs run in opposite directions (avoids native FULL/RIGHT JOIN so it runs on older SQLite too). Semantically identical to the DEPT RIGHT JOIN EMP + DEPT LEFT JOIN EMP form."
+}

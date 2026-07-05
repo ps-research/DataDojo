@@ -1,0 +1,15 @@
+{
+  "slug": "white-select-columns",
+  "universe": "",
+  "belt": "white",
+  "title": "Select Specific Columns",
+  "concepts": ["projection", "column-list", "column-order"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.4",
+  "landmines": [],
+  "learn": {"recipe": "1.4", "concepts": ["explicit column list", "projection", "column output order"]},
+  "notes": "Projection: naming columns instead of *. Output has exactly three columns in the requested order (ename, deptno, sal). Row order unspecified, judged as an unordered bag."
+}

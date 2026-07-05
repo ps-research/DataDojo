@@ -1,0 +1,33 @@
+{
+  "slug": "white-null-comparison",
+  "universe": "",
+  "belt": "white",
+  "title": "Comparing Through NULLs with COALESCE",
+  "concepts": [
+    "null-handling",
+    "coalesce",
+    "scalar-subquery",
+    "comparison"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.12",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.12",
+    "concepts": [
+      "null-handling",
+      "coalesce",
+      "scalar-subquery"
+    ]
+  },
+  "notes": "COALESCE(comm,0) keeps NULL-commission employees in the comparison; a plain comm < ... would drop them. The threshold uses MAX(comm) over WARD so the scalar subquery returns a single value even if the hidden fixture contains more than one employee named WARD."
+}

@@ -1,0 +1,30 @@
+{
+  "slug": "white-min-max",
+  "universe": "",
+  "belt": "white",
+  "title": "Finding the Min and Max",
+  "concepts": [
+    "aggregate",
+    "min-max"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.2",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.2",
+    "concepts": [
+      "aggregate",
+      "min-max"
+    ]
+  },
+  "notes": "MIN and MAX in a single SELECT; both ignore NULLs."
+}

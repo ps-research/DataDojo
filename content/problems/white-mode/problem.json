@@ -1,0 +1,18 @@
+{
+  "slug": "white-mode",
+  "universe": "",
+  "belt": "white",
+  "title": "Finding the Mode of a Column",
+  "concepts": ["dense-rank", "group-by", "count", "subquery", "mode"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.9",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.9",
+    "concepts": ["dense-rank", "group-by", "count", "subquery", "mode"]
+  },
+  "notes": "The mode is the most frequent value. Count each salary with GROUP BY, DENSE_RANK the counts descending, and keep rank 1. DENSE_RANK (not ROW_NUMBER) is deliberate: if several salaries tie for most frequent, all of them share rank 1 and all are returned."
+}

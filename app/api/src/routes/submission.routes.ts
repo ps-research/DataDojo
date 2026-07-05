@@ -43,7 +43,7 @@ router.post(
         state: "solved",
       });
       if (solvedCount < problem.prerequisites.length)
-        throw new ApiError(423, "Problem is locked — solve its prerequisites first");
+        throw new ApiError(423, "Problem is locked - solve its prerequisites first");
     }
 
     const sub = await Submission.create({
@@ -81,7 +81,7 @@ router.get(
   })
 );
 
-// SSE verdict stream: one-shot — closes after the verdict arrives.
+// SSE verdict stream: one-shot - closes after the verdict arrives.
 router.get(
   "/:id/stream",
   requireAuth,

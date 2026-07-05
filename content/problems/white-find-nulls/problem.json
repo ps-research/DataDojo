@@ -1,0 +1,15 @@
+{
+  "slug": "white-find-nulls",
+  "universe": "",
+  "belt": "white",
+  "title": "Find Rows Where a Column Is NULL",
+  "concepts": ["null-awareness", "is-null", "where"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.11",
+  "landmines": [],
+  "learn": {"recipe": "1.11", "concepts": ["IS NULL predicate", "NULL is not equal to anything", "distinguishing NULL from 0"]},
+  "notes": "IS NULL. Key point: comm = NULL never matches; only IS NULL does. TURNER has comm = 0 (a real value) and must NOT be returned. Ten of the fourteen employees have a NULL commission. Row order unspecified, judged as an unordered bag."
+}

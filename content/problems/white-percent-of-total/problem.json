@@ -1,0 +1,18 @@
+{
+  "slug": "white-percent-of-total",
+  "universe": "",
+  "belt": "white",
+  "title": "Computing a Percentage of a Total",
+  "concepts": ["conditional-aggregate", "case", "decimal-division", "ratio"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "7.11",
+  "landmines": [],
+  "learn": {
+    "recipe": "7.11",
+    "concepts": ["conditional-aggregate", "case", "decimal-division", "ratio"]
+  },
+  "notes": "A CASE inside SUM aggregates only the matching rows (department 10's payroll); dividing by SUM(sal) gives its share of the whole. The multiply-by-100.0 (rather than 100) is essential for portability: integer/integer division in SQLite and PostgreSQL would truncate the ratio to 0. The 100.0 forces decimal arithmetic on every engine; the result is ROUNDed to 2 decimals."
+}

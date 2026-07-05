@@ -1,0 +1,15 @@
+{
+  "slug": "white-column-aliases",
+  "universe": "",
+  "belt": "white",
+  "title": "Rename Columns with AS",
+  "concepts": ["column-alias", "as-keyword", "projection"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.5",
+  "landmines": [],
+  "learn": {"recipe": "1.5", "concepts": ["AS keyword", "column aliases", "result-set headers"]},
+  "notes": "Aliasing with AS. Output headers must be salary and commission. NULL commissions pass through unchanged. Row order unspecified, judged as an unordered bag; the pair (3000, NULL) legitimately appears twice (SCOTT and FORD)."
+}

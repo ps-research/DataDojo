@@ -1,0 +1,15 @@
+{
+  "slug": "white-select-all",
+  "universe": "",
+  "belt": "white",
+  "title": "See Every Row and Column",
+  "concepts": ["select-star", "projection", "full-table-scan"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.1",
+  "landmines": [],
+  "learn": {"recipe": "1.1", "concepts": ["SELECT *", "projection", "no WHERE returns all rows"]},
+  "notes": "The canonical first query. * expands to all eight EMP columns; the absence of a WHERE clause returns all rows. Row order is unspecified, so the judge compares as an unordered bag."
+}

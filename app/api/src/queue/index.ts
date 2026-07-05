@@ -14,7 +14,7 @@ export interface JudgeJobData {
 const QUEUE_NAME = "judge";
 
 // bullmq bundles its own ioredis type instance; the runtime object is fully
-// compatible — cast bridges the duplicate nominal types.
+// compatible - cast bridges the duplicate nominal types.
 const asConn = (r: ReturnType<typeof makeRedis>) => r as unknown as ConnectionOptions;
 
 export const judgeQueue = new Queue<JudgeJobData, unknown, string>(QUEUE_NAME, {

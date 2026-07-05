@@ -82,7 +82,7 @@ function makeAdapter(name: Engine, bin: () => string, args: string[], probe: str
   };
 }
 
-// -s -E: no user-site, no env-var injection — but venv site-packages still
+// -s -E: no user-site, no env-var injection - but venv site-packages still
 // resolve (unlike -I, which would hide the venv's pandas).
 export const pythonAdapter = makeAdapter(
   "python",

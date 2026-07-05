@@ -19,12 +19,11 @@ async function main(): Promise<void> {
   const gold = JSON.parse(readFileSync(goldPath, "utf8")) as GoldProblem[];
   await connectMongo();
 
-  let upserted = 0;
-  for (const p of gold) {
-    await Problem.updateOne({ slug: p.slug }, { $set: p }, { upsert: true });
-    upserted++;
-  }
-  await Problem.deleteOne({ slug: "dev-headcount-by-dept" });
+  // gold_problems.json is the authoritative set - replace wholesale so
+  // reassigned problem numbers can't collide with a stale unique index.
+  await Problem.deleteMany({});
+  await Problem.insertMany(gold, { ordered: false });
+  const upserted = gold.length;
 
   const byBelt = await Problem.aggregate([{ $group: { _id: "$belt", n: { $sum: 1 } } }]);
   console.log(`[seed] upserted ${upserted} problems from ${goldPath}`);

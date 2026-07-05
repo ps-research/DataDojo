@@ -1,0 +1,31 @@
+{
+  "slug": "white-join-related-rows",
+  "universe": "",
+  "belt": "white",
+  "title": "Join Employees to Their Location",
+  "concepts": [
+    "inner-join",
+    "equi-join",
+    "multi-table"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "3.2",
+  "landmines": [],
+  "learn": {
+    "recipe": "3.2",
+    "concepts": [
+      "inner-join",
+      "equi-join",
+      "join-key"
+    ]
+  }
+}

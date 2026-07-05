@@ -1,0 +1,15 @@
+{
+  "slug": "white-filter-where",
+  "universe": "",
+  "belt": "white",
+  "title": "Filter Rows with WHERE",
+  "concepts": ["where", "row-filter", "equality-predicate"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.2",
+  "landmines": [],
+  "learn": {"recipe": "1.2", "concepts": ["WHERE clause", "equality predicate", "row-by-row filtering"]},
+  "notes": "Introduces WHERE. The predicate deptno = 10 is checked per row; only matching rows survive. Order unspecified, judged as an unordered bag."
+}

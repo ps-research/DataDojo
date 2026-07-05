@@ -1,0 +1,31 @@
+{
+  "slug": "white-quote-literals",
+  "universe": "",
+  "belt": "white",
+  "title": "Embedding Quotes in String Literals",
+  "concepts": [
+    "string-literals",
+    "quote-escaping",
+    "union-all"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "6.2",
+  "landmines": [],
+  "learn": {
+    "recipe": "6.2",
+    "concepts": [
+      "string-literals",
+      "quote-escaping"
+    ]
+  },
+  "notes": "Teaches doubling single quotes ('') to embed a literal quote. Output is constant across fixtures (it is pure literals), which is inherent to the technique being taught."
+}

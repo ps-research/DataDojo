@@ -1,0 +1,30 @@
+{
+  "slug": "white-order-by",
+  "universe": "",
+  "belt": "white",
+  "title": "Sort Department 10 by Salary",
+  "concepts": [
+    "order-by",
+    "sorting"
+  ],
+  "engines": [
+    "sqlite",
+    "duckdb",
+    "postgres",
+    "mysql",
+    "mssql"
+  ],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "2.1",
+  "landmines": [],
+  "learn": {
+    "recipe": "2.1",
+    "concepts": [
+      "order-by",
+      "asc-desc",
+      "sorting"
+    ]
+  }
+}

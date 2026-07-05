@@ -1,0 +1,18 @@
+{
+  "slug": "white-top-n",
+  "universe": "",
+  "belt": "white",
+  "title": "Selecting the Top N with Ties",
+  "concepts": ["dense-rank", "top-n", "window-function", "ties", "subquery"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "11.5",
+  "landmines": [],
+  "learn": {
+    "recipe": "11.5",
+    "concepts": ["dense-rank", "top-n", "window-function", "ties", "subquery"]
+  },
+  "notes": "Top-N by rank, not by row count. DENSE_RANK() OVER (ORDER BY sal DESC) assigns rank 1 to the top salary, 2 to the next distinct salary, and so on with no gaps; filtering dr <= 5 keeps the five highest distinct salaries. Because two employees can share a salary (rank), the result can hold more than five rows. LIMIT 5 would arbitrarily cut a tied employee; DENSE_RANK keeps every employee at a qualifying salary."
+}

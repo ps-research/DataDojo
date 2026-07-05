@@ -1,0 +1,15 @@
+{
+  "slug": "white-and-or-conditions",
+  "universe": "",
+  "belt": "white",
+  "title": "Combine Conditions with AND and OR",
+  "concepts": ["where", "boolean-logic", "operator-precedence", "null-awareness"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 10,
+  "prerequisites": [],
+  "provenance": "1.3",
+  "landmines": [],
+  "learn": {"recipe": "1.3", "concepts": ["AND / OR", "operator precedence (AND before OR)", "IS NOT NULL"]},
+  "notes": "Teaches that AND binds tighter than OR. The three OR branches are: deptno = 10; comm IS NOT NULL; and the grouped (sal <= 2000 AND deptno = 20). Order unspecified, judged as an unordered bag."
+}
