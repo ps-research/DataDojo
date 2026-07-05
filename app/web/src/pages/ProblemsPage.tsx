@@ -45,7 +45,6 @@ export function ProblemsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // collections present, ordered: universes, then Tutorial/Python/R
   const collections = useMemo(() => {
     const keys = new Set(problems.map((p) => collectionKey(p)));
     const order = ["pulsestream", "carthive", "rideloop", "medicore", "metricforge", "tickforge", "__tutorial", "__python", "__r"];
@@ -73,64 +72,79 @@ export function ProblemsPage() {
   const solvedCount = problems.filter((p) => p.solved).length;
   const pct = problems.length ? Math.round((solvedCount / problems.length) * 100) : 0;
 
-  const chip = (active: boolean) =>
-    `rounded-lg px-3 py-1.5 text-[13px] transition-colors ${
-      active
-        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-        : "text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
-    }`;
-
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Problems</h1>
-        <div className="mt-3 flex items-center gap-3">
-          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-            <div className="h-full rounded-full bg-brand transition-all" style={{ width: `${pct}%` }} />
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      {/* header */}
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-[26px] font-semibold tracking-tight">Problems</h1>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Sharpen your SQL, pandas, and R against a real judge.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <div className="text-lg font-semibold tabular-nums">{solvedCount}<span className="text-zinc-400"> / {problems.length}</span></div>
+            <div className="text-xs text-zinc-400">solved</div>
           </div>
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">{solvedCount} / {problems.length} solved</span>
+          <div className="relative h-11 w-11">
+            <svg viewBox="0 0 36 36" className="h-11 w-11 -rotate-90">
+              <circle cx="18" cy="18" r="15" fill="none" strokeWidth="3" className="stroke-zinc-200 dark:stroke-zinc-800" />
+              <circle
+                cx="18" cy="18" r="15" fill="none" strokeWidth="3" strokeLinecap="round"
+                className="stroke-brand"
+                strokeDasharray={`${(pct / 100) * 94.25} 94.25`}
+              />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-[11px] font-medium tabular-nums">{pct}%</span>
+          </div>
         </div>
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        <button onClick={() => setBelt("")} className={chip(!belt)}>All belts</button>
-        {BELT_ORDER.map((b) => (
-          <button key={b} onClick={() => setBelt(belt === b ? "" : b)} className={chip(belt === b)}>
-            {BELT_META[b].label}
-          </button>
-        ))}
-      </div>
-
-      <div className="mb-5 flex flex-wrap items-center gap-2">
-        <button onClick={() => setCollection("")} className={chip(!collection)}>All collections</button>
-        {collections.map((k) => (
-          <button key={k} onClick={() => setCollection(collection === k ? "" : k)} className={chip(collection === k)}>
-            {collectionLabel(k)}
-          </button>
-        ))}
-        <div className="ml-auto flex items-center gap-2">
-          <select className="input w-auto py-2" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
-            {SORTS.map((s) => (
-              <option key={s.key} value={s.key}>Sort: {s.label}</option>
-            ))}
-          </select>
-          <input className="input w-40 py-2" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
+      {/* filters */}
+      <div className="mb-6 space-y-3">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-xs font-medium uppercase tracking-wide text-zinc-400">Belt</span>
+          <FilterChip active={!belt} onClick={() => setBelt("")}>All</FilterChip>
+          {BELT_ORDER.map((b) => (
+            <FilterChip key={b} active={belt === b} onClick={() => setBelt(belt === b ? "" : b)}>
+              {BELT_META[b].label}
+            </FilterChip>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-xs font-medium uppercase tracking-wide text-zinc-400">Track</span>
+          <FilterChip active={!collection} onClick={() => setCollection("")}>All</FilterChip>
+          {collections.map((k) => (
+            <FilterChip key={k} active={collection === k} onClick={() => setCollection(collection === k ? "" : k)}>
+              {collectionLabel(k)}
+            </FilterChip>
+          ))}
+          <div className="ml-auto flex items-center gap-2">
+            <select className="input w-auto py-1.5 text-[13px]" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
+              {SORTS.map((s) => (
+                <option key={s.key} value={s.key}>Sort: {s.label}</option>
+              ))}
+            </select>
+            <input className="input w-36 py-1.5 text-[13px]" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
+          </div>
         </div>
       </div>
 
+      {/* list */}
       <div className="card overflow-hidden">
-        <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-          {loading && <div className="p-8 text-center text-sm text-zinc-400">Loading...</div>}
+        <div className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
+          {loading && <div className="p-10 text-center text-sm text-zinc-400">Loading...</div>}
           {!loading && filtered.length === 0 && (
-            <div className="p-8 text-center text-sm text-zinc-400">No problems match those filters.</div>
+            <div className="p-10 text-center text-sm text-zinc-400">No problems match those filters.</div>
           )}
           {filtered.map((p) => (
             <Link
               key={p.slug}
               to={p.locked ? "#" : `/problems/${p.slug}`}
               onClick={(e) => p.locked && e.preventDefault()}
-              className={`flex items-center gap-4 px-4 py-3 transition-colors ${
-                p.locked ? "cursor-not-allowed opacity-50" : "hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+              className={`group flex items-center gap-4 px-5 py-3.5 transition-colors ${
+                p.locked ? "cursor-not-allowed opacity-50" : "hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
               }`}
             >
               <span className="flex w-5 flex-none justify-center">
@@ -139,17 +153,34 @@ export function ProblemsPage() {
                 ) : p.locked ? (
                   <span className="text-zinc-400"><LockIcon /></span>
                 ) : (
-                  <span className="font-mono text-xs text-zinc-300 dark:text-zinc-600">{p.number}</span>
+                  <span className="font-mono text-xs text-zinc-300 tabular-nums dark:text-zinc-600">{p.number}</span>
                 )}
               </span>
-              <span className="min-w-0 flex-1 truncate text-sm">{p.title}</span>
-              <CollectionBadge collectionKey={collectionKey(p)} />
-              <span className="hidden w-16 text-right font-mono text-xs text-zinc-400 sm:inline">{p.points} pts</span>
-              <span className="w-14 text-right"><BeltBadge belt={p.belt} /></span>
+              <span className={`min-w-0 flex-1 truncate text-[15px] ${p.solved ? "text-zinc-500 dark:text-zinc-400" : "text-zinc-800 dark:text-zinc-100"} group-hover:text-zinc-900 dark:group-hover:text-white`}>
+                {p.title}
+              </span>
+              <span className="hidden w-32 flex-none sm:block"><CollectionBadge collectionKey={collectionKey(p)} /></span>
+              <span className="hidden w-16 flex-none text-right font-mono text-xs text-zinc-400 tabular-nums md:block">{p.points} pts</span>
+              <span className="w-14 flex-none text-right"><BeltBadge belt={p.belt} /></span>
             </Link>
           ))}
         </div>
       </div>
     </div>
+  );
+}
+
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`rounded-full px-3 py-1 text-[13px] transition-colors ${
+        active
+          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+          : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700 dark:bg-zinc-800/70 dark:text-zinc-400 dark:hover:bg-zinc-800"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

@@ -42,5 +42,10 @@ export function Pill({ children }: { children: ReactNode }) {
 import { COLLECTIONS } from "../lib/collections";
 export function CollectionBadge({ collectionKey }: { collectionKey: string }) {
   const c = COLLECTIONS[collectionKey] ?? COLLECTIONS.__tutorial;
-  return <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-medium ${c.cls}`}>{c.label}</span>;
+  return (
+    <span className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+      <span className={`h-1.5 w-1.5 flex-none rounded-full ${c.dot}`} />
+      {c.label}
+    </span>
+  );
 }
