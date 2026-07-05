@@ -20,6 +20,11 @@ Content flows through a 5-layer knowledge base (`kb/`): **bronze** (verbatim ext
 MERN: MongoDB (Mongoose) · Express · React (Vite, Tailwind, Monaco) · Node.
 Judge engines: SQLite & DuckDB in-process; PostgreSQL & MySQL servers; Python/pandas sandboxed subprocess.
 
+## Documentation
+
+- **[High-Level Design (HLD)](docs/HLD.md)** — architecture, two-plane design, submission lifecycle, security model, capacity plan, scalability path, decision log
+- **[Low-Level Design (LLD)](docs/LLD.md)** — data model (ER), API contract, judge internals and isolation strategy, auth flow, caching, deployment topology
+
 ## Repository layout
 
 ```
