@@ -136,6 +136,48 @@ def verify_reference(fixture_sql: str, reference_sql: str) -> tuple[bool, str, i
 
 
 POINTS = {"white": 10, "blue": 20, "purple": 40, "black": 70, "red": 120}
+HIDDEN_SEEDS = [301, 302, 303]
+
+WHITE_DDL = """CREATE TABLE dept (deptno INTEGER PRIMARY KEY, dname VARCHAR(14), loc VARCHAR(13));
+CREATE TABLE emp (empno INTEGER PRIMARY KEY, ename VARCHAR(10), job VARCHAR(9), mgr INTEGER, hiredate DATE, sal INTEGER, comm INTEGER, deptno INTEGER);
+CREATE TABLE t1 (id INTEGER PRIMARY KEY);
+CREATE TABLE t10 (id INTEGER PRIMARY KEY);
+CREATE TABLE t100 (id INTEGER PRIMARY KEY);
+CREATE TABLE t500 (id INTEGER PRIMARY KEY);"""
+WHITE_COLS = {"emp": ["empno", "ename", "job", "mgr", "hiredate", "sal", "comm", "deptno"],
+              "dept": ["deptno", "dname", "loc"], "t1": ["id"], "t10": ["id"], "t100": ["id"], "t500": ["id"]}
+
+_hidden_cache: dict = {}
+
+def hidden_for_universe(universe: str, seed: int) -> str | None:
+    key = ("u", universe, seed)
+    if key not in _hidden_cache:
+        _hidden_cache[key] = build_universe_fixture(universe, seed, "blue")
+    return _hidden_cache[key]
+
+def hidden_for_white(seed: int) -> str | None:
+    key = ("w", seed)
+    if key in _hidden_cache:
+        return _hidden_cache[key]
+    out = Path(f"/tmp/whitehidden_{seed}")
+    if not out.exists():
+        r = subprocess.run(["python3", str(ROOT / "white" / "emp_generator.py"),
+                            "--seed", str(seed), "--out", str(out), "--emps", "1500"], capture_output=True)
+        if r.returncode != 0:
+            _hidden_cache[key] = None
+            return None
+    parts = [WHITE_DDL]
+    for tbl, colnames in WHITE_COLS.items():
+        csvp = out / f"{tbl}.csv"
+        if csvp.exists():
+            parts.append(csv_to_inserts(tbl, colnames, csvp))
+    _hidden_cache[key] = "\n".join(parts)
+    return _hidden_cache[key]
+
+def build_hidden_fixtures(universe: str, reference_sql: str) -> list[str]:
+    """3 big hidden fixtures; keep only those the reference runs cleanly on."""
+    cands = [hidden_for_universe(universe, s) if universe else hidden_for_white(s) for s in HIDDEN_SEEDS]
+    return [f for f in cands if f and verify_reference(f, reference_sql)[0]]
 
 
 def no_dashes(text: str) -> str:
@@ -250,6 +292,7 @@ def main() -> None:
                 "schemaPreview": schema_preview(fixture_sql),
                 "orderMatters": bool(meta.get("orderMatters", False)),
                 "engines": engines,
+                "hiddenFixtures": build_hidden_fixtures(universe, ref_default),
                 "prerequisites": [],  # all problems open (no ladder locks)
                 "provenance": meta.get("provenance", ""),
                 "points": meta.get("points", POINTS.get(meta.get("belt", "white"), 10)),

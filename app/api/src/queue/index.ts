@@ -47,12 +47,14 @@ export function startJudgeWorker(): Worker<JudgeJobData, unknown, string> {
         return;
       }
 
-      const outcome = await judgeSubmission(variant, sub.code, problem.orderMatters);
+      const outcome = await judgeSubmission(variant, sub.code, problem.orderMatters, problem.hiddenFixtures ?? []);
       sub.status = "done";
       sub.verdict = outcome.verdict;
       sub.message = outcome.message;
       sub.runtimeMs = outcome.runtimeMs;
       sub.rowsReturned = outcome.rowsReturned;
+      sub.testsPassed = outcome.testsPassed;
+      sub.testsTotal = outcome.testsTotal;
       await sub.save();
 
       if (outcome.verdict === "AC") {
@@ -86,6 +88,8 @@ export function startJudgeWorker(): Worker<JudgeJobData, unknown, string> {
           verdict: sub.verdict,
           message: sub.message,
           runtimeMs: sub.runtimeMs,
+          testsPassed: sub.testsPassed,
+          testsTotal: sub.testsTotal,
         })
       );
     },

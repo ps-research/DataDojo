@@ -12,6 +12,8 @@ export interface SubmissionDoc extends Document {
   message: string;
   runtimeMs: number;
   rowsReturned: number;
+  testsPassed: number;
+  testsTotal: number;
   createdAt: Date;
 }
 
@@ -27,6 +29,8 @@ const submissionSchema = new Schema<SubmissionDoc>(
     message: { type: String, default: "" },
     runtimeMs: { type: Number, default: 0 },
     rowsReturned: { type: Number, default: 0 },
+    testsPassed: { type: Number, default: 0 },
+    testsTotal: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

@@ -125,6 +125,8 @@ router.get(
         message: sub.message,
         runtimeMs: sub.runtimeMs,
         rowsReturned: sub.rowsReturned,
+        testsPassed: sub.testsPassed,
+        testsTotal: sub.testsTotal,
         createdAt: sub.createdAt,
       },
     });
@@ -146,7 +148,7 @@ router.get(
 
     if (sub.status === "done") {
       res.write(
-        `data: ${JSON.stringify({ id: String(sub._id), status: "done", verdict: sub.verdict, message: sub.message, runtimeMs: sub.runtimeMs })}\n\n`
+        `data: ${JSON.stringify({ id: String(sub._id), status: "done", verdict: sub.verdict, message: sub.message, runtimeMs: sub.runtimeMs, testsPassed: sub.testsPassed, testsTotal: sub.testsTotal })}\n\n`
       );
       res.end();
       return;

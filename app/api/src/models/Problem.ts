@@ -23,6 +23,7 @@ export interface ProblemDoc extends Document {
   schemaPreview: string;
   orderMatters: boolean;
   engines: EngineVariant[];
+  hiddenFixtures: string[];  // big judge fixtures (SQL engines); never sent to client
   prerequisites: string[];   // problem slugs that must be AC'd first (ladder rule)
   provenance: string;
   points: number;
@@ -56,6 +57,7 @@ const problemSchema = new Schema<ProblemDoc>(
     schemaPreview: { type: String, default: "" },
     orderMatters: { type: Boolean, default: false },
     engines: [engineVariantSchema],
+    hiddenFixtures: [{ type: String }],
     prerequisites: [{ type: String }],
     provenance: { type: String, default: "" },
     points: { type: Number, default: 10 },

@@ -9,6 +9,7 @@ import { BeltBadge, Pill, VerdictBadge, CollectionBadge } from "../components/Ba
 import { CollapseIcon, ExpandIcon } from "../components/icons";
 import { collectionKey } from "../lib/collections";
 import { engineLabel } from "../lib/engines";
+import { Spinner } from "../components/Logo";
 import { ResultTable, type ResultSet } from "../components/ResultTable";
 
 interface EngineOption {
@@ -41,6 +42,8 @@ interface VerdictEvent {
   verdict: string;
   message: string;
   runtimeMs: number;
+  testsPassed?: number;
+  testsTotal?: number;
 }
 
 const MONACO_LANG: Record<string, string> = {
@@ -131,9 +134,17 @@ export function SolvePage() {
         es.close();
         // graceful fallback: poll once after a beat
         setTimeout(() => {
-          void api<{ submission: SubmissionRow & { message: string } }>(`/api/submissions/${id}`).then((d) => {
+          void api<{ submission: SubmissionRow & { message: string; testsPassed?: number; testsTotal?: number } }>(
+            `/api/submissions/${id}`
+          ).then((d) => {
             if (d.submission.status === "done") {
-              setResult({ verdict: d.submission.verdict ?? "RE", message: d.submission.message, runtimeMs: d.submission.runtimeMs });
+              setResult({
+                verdict: d.submission.verdict ?? "RE",
+                message: d.submission.message,
+                runtimeMs: d.submission.runtimeMs,
+                testsPassed: d.submission.testsPassed,
+                testsTotal: d.submission.testsTotal,
+              });
               setSubmitting(false);
             }
           });
@@ -302,10 +313,10 @@ export function SolvePage() {
         </button>
         <div className="ml-auto flex items-center gap-2">
           <button onClick={() => void run()} disabled={running || submitting} className="btn-ghost border border-zinc-300 dark:border-zinc-700">
-            {running ? "Running..." : "Run"}
+            {running ? <><Spinner className="h-3.5 w-3.5" /> Running</> : "Run"}
           </button>
           <button onClick={() => void submit()} disabled={submitting || running} className="btn-primary">
-            {submitting ? "Judging..." : "Submit"}
+            {submitting ? <><Spinner className="h-3.5 w-3.5" /> Judging</> : "Submit"}
           </button>
         </div>
       </div>
@@ -351,15 +362,32 @@ export function SolvePage() {
 
       {result && !runResult && (
         <div
-          className={`flex flex-none items-start gap-3 border-t px-4 py-3 text-sm ${
+          className={`flex-none border-t px-4 py-3 ${
             result.verdict === "AC"
               ? "border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/40"
               : "border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
           }`}
         >
-          <VerdictBadge verdict={result.verdict} />
-          <p className="min-w-0 flex-1 text-zinc-600 dark:text-zinc-300">{result.message}</p>
-          <span className="flex-none text-xs text-zinc-400">{result.runtimeMs} ms</span>
+          <div className="flex items-start gap-3 text-sm">
+            <VerdictBadge verdict={result.verdict} />
+            <p className="min-w-0 flex-1 text-zinc-600 dark:text-zinc-300">{result.message}</p>
+            <span className="flex-none text-xs text-zinc-400">{result.runtimeMs} ms</span>
+          </div>
+          {result.testsTotal != null && result.testsTotal > 0 && (
+            <div className="mt-2.5 flex items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    result.verdict === "AC" ? "bg-emerald-500" : "bg-amber-500"
+                  }`}
+                  style={{ width: `${((result.testsPassed ?? 0) / result.testsTotal) * 100}%` }}
+                />
+              </div>
+              <span className="flex-none font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                {result.testsPassed ?? 0} / {result.testsTotal} tests
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>

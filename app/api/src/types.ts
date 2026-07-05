@@ -28,4 +28,6 @@ export interface JudgeOutcome {
   message: string;
   runtimeMs: number;
   rowsReturned: number;
+  testsPassed: number;
+  testsTotal: number;
 }
