@@ -1,0 +1,30 @@
+{
+  "stage": "04_extract_datasets",
+  "datasets": [
+    {
+      "name": "EMP",
+      "rows": 14
+    },
+    {
+      "name": "DEPT",
+      "rows": 4
+    },
+    {
+      "name": "T1",
+      "rows": 1
+    },
+    {
+      "name": "T10",
+      "rows": 10
+    },
+    {
+      "name": "T100",
+      "rows": 100
+    },
+    {
+      "name": "T500",
+      "rows": 500
+    }
+  ],
+  "exceptions": []
+}

@@ -1,0 +1,31 @@
+{
+  "stage": "05_verify",
+  "solutions_total": 415,
+  "engine_versions": {
+    "sqlite": "sqlite 3.53.2",
+    "duckdb": "duckdb 1.5.4",
+    "postgres": "PostgreSQL 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu",
+    "mysql": "10.11.14-MariaDB-0ubuntu0.24.04.1"
+  },
+  "per_engine": {
+    "sqlite": {
+      "pass": 113,
+      "error": 302
+    },
+    "duckdb": {
+      "pass": 136,
+      "error": 279
+    },
+    "postgres": {
+      "pass": 136,
+      "error": 279
+    },
+    "mysql": {
+      "pass": 136,
+      "error": 279
+    }
+  },
+  "recipes_ok_parse": 164,
+  "recipes_runnable_primary": 114,
+  "recipes_runnable_any": 115
+}

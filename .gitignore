@@ -5,6 +5,10 @@ Resources/
 kb/datadojo_kb.sqlite
 kb/reports/toc_raw.txt
 
+# Local engine data dirs (verification farm)
+kb/.pgdata/
+kb/.mariadata/
+
 # Dependencies & builds
 node_modules/
 dist/
