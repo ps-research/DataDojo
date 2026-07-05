@@ -150,9 +150,12 @@ WHITE_COLS = {"emp": ["empno", "ename", "job", "mgr", "hiredate", "sal", "comm",
 _hidden_cache: dict = {}
 
 def hidden_for_universe(universe: str, seed: int) -> str | None:
+    # Different seed from the visible sample -> defeats hardcoding. Kept at
+    # sample scale so it embeds (blue-scale = ~2 MB each blows past the JSON
+    # string limit; true large-scale needs pre-built fixture DBs, not embedding).
     key = ("u", universe, seed)
     if key not in _hidden_cache:
-        _hidden_cache[key] = build_universe_fixture(universe, seed, "blue")
+        _hidden_cache[key] = build_universe_fixture(universe, seed, "sample")
     return _hidden_cache[key]
 
 def hidden_for_white(seed: int) -> str | None:
@@ -162,7 +165,7 @@ def hidden_for_white(seed: int) -> str | None:
     out = Path(f"/tmp/whitehidden_{seed}")
     if not out.exists():
         r = subprocess.run(["python3", str(ROOT / "white" / "emp_generator.py"),
-                            "--seed", str(seed), "--out", str(out), "--emps", "1500"], capture_output=True)
+                            "--seed", str(seed), "--out", str(out), "--emps", "600"], capture_output=True)
         if r.returncode != 0:
             _hidden_cache[key] = None
             return None
