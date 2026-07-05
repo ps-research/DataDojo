@@ -1,0 +1,13 @@
+{
+  "slug": "py-region-category-pivot",
+  "universe": "",
+  "belt": "purple",
+  "title": "Region by Category Revenue Matrix",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["pivot-table", "reshape", "fill-value", "reindex-columns", "row-total"]
+}

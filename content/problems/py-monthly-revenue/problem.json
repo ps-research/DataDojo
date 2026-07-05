@@ -1,0 +1,13 @@
+{
+  "slug": "py-monthly-revenue",
+  "universe": "",
+  "belt": "purple",
+  "title": "Monthly Revenue and Running Total",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["datetime-parsing", "resample", "time-series", "empty-bucket", "cumulative-sum"]
+}

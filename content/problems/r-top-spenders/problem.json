@@ -1,0 +1,13 @@
+{
+  "slug": "r-top-spenders",
+  "universe": "",
+  "belt": "blue",
+  "title": "Top Five Spenders",
+  "category": "r",
+  "engines": ["r"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "authored-r",
+  "concepts": ["inner-join", "merge", "group-by", "sum", "order-by", "top-n"]
+}

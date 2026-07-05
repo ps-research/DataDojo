@@ -1,0 +1,13 @@
+{
+  "slug": "py-category-revenue",
+  "universe": "",
+  "belt": "blue",
+  "title": "Revenue by Product Category",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["groupby", "aggregation", "sum", "count", "sort-values", "derived-column"]
+}

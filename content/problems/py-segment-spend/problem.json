@@ -1,0 +1,13 @@
+{
+  "slug": "py-segment-spend",
+  "universe": "",
+  "belt": "blue",
+  "title": "Spend by Customer Segment",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["merge", "inner-join", "groupby", "aggregation", "sort-values"]
+}

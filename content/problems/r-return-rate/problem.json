@@ -1,0 +1,13 @@
+{
+  "slug": "r-return-rate",
+  "universe": "",
+  "belt": "purple",
+  "title": "Category Return-Rate Leaderboard",
+  "category": "r",
+  "engines": ["r"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "authored-r",
+  "concepts": ["inner-join", "merge", "conditional-aggregation", "left-join", "null-handling", "ratio", "having-filter", "order-by"]
+}

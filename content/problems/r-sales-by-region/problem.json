@@ -1,0 +1,13 @@
+{
+  "slug": "r-sales-by-region",
+  "universe": "",
+  "belt": "blue",
+  "title": "Regional Sales Roll-Up",
+  "category": "r",
+  "engines": ["r"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "authored-r",
+  "concepts": ["group-by", "sum", "aggregate", "order-by", "multi-column-aggregate"]
+}

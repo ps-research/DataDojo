@@ -143,6 +143,25 @@ def no_dashes(text: str) -> str:
     return text.replace(" — ", " - ").replace(" – ", " - ").replace("—", "-").replace("–", "-")
 
 
+def verify_code(category: str, fixture: str, reference: str) -> tuple[bool, str]:
+    """Run fixture+reference for a python/r problem; ok if it prints CSV-ish stdout."""
+    program = f"{fixture}\n{reference}\n"
+    if category == "python":
+        cmd = ["python3", "-s", "-E", "-"]
+    else:
+        cmd = ["Rscript", "--vanilla", "-"]
+    try:
+        p = subprocess.run(cmd, input=program, capture_output=True, text=True, timeout=30)
+    except Exception as e:
+        return (False, f"exec failed: {e}")
+    if p.returncode != 0:
+        return (False, (p.stderr or "nonzero exit")[:200])
+    out = p.stdout.strip()
+    if not out or "\n" not in out and "," not in out:
+        return (False, "reference produced no CSV output")
+    return (True, "")
+
+
 def main() -> None:
     problems = []
     report = {"total": 0, "verified": 0, "fixture_fail": 0, "reference_fail": 0, "exceptions": []}
@@ -156,6 +175,37 @@ def main() -> None:
             ref_default = (d / "reference.sql").read_text() if (d / "reference.sql").exists() else ""
             fixtures = json.loads((d / "fixtures.json").read_text()) if (d / "fixtures.json").exists() else {}
             universe = meta.get("universe", "")
+            category = meta.get("category", "sql")
+
+            # Python / R problems: self-contained fixture + reference, verified by running.
+            if category in ("python", "r"):
+                ext = "py" if category == "python" else "R"
+                fixture = (d / f"fixture.{ext}").read_text() if (d / f"fixture.{ext}").exists() else ""
+                reference = (d / f"reference.{ext}").read_text() if (d / f"reference.{ext}").exists() else ""
+                if not reference:
+                    report["reference_fail"] += 1
+                    report["exceptions"].append(f"{meta['slug']}: missing reference.{ext}")
+                    continue
+                ok, err = verify_code(category, fixture, reference)
+                if not ok:
+                    report["reference_fail"] += 1
+                    report["exceptions"].append(f"{meta['slug']}: {category} verify failed: {err}")
+                    continue
+                starter = "# your code here\n" if category == "python" else "# your code here\n"
+                problems.append({
+                    "slug": meta["slug"], "number": number, "title": no_dashes(meta["title"]),
+                    "statementMd": no_dashes(statement), "belt": meta.get("belt", "blue"),
+                    "category": category, "universe": "", "concepts": meta.get("concepts", []),
+                    "tags": meta.get("tags", []), "schemaPreview": "",
+                    "orderMatters": bool(meta.get("orderMatters", False)),
+                    "engines": [{"engine": category, "fixtureSql": fixture, "fixtureRef": "",
+                                 "referenceSolution": reference, "starterCode": starter, "timeoutMs": 12000}],
+                    "prerequisites": [], "provenance": meta.get("provenance", f"authored-{category}"),
+                    "points": meta.get("points", POINTS.get(meta.get("belt", "blue"), 20)),
+                })
+                number += 1
+                report["verified"] += 1
+                continue
 
             if universe:
                 vis = fixtures.get("visible", {"seed": 42, "scale": "sample"})

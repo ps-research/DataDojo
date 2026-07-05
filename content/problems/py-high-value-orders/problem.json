@@ -1,0 +1,13 @@
+{
+  "slug": "py-high-value-orders",
+  "universe": "",
+  "belt": "blue",
+  "title": "High-Value Completed Orders",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["boolean-mask", "filtering", "column-selection", "sort-values", "multi-key-sort"]
+}

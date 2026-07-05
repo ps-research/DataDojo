@@ -1,0 +1,13 @@
+{
+  "slug": "py-top-product-per-region",
+  "universe": "",
+  "belt": "purple",
+  "title": "Top Two Products per Region",
+  "category": "python",
+  "engines": ["python"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "authored-python",
+  "concepts": ["groupby", "aggregation", "rank-within-group", "cumcount", "top-n-per-group", "tie-break"]
+}
