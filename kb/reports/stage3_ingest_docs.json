@@ -1,0 +1,8 @@
+{
+  "stage": "03_ingest_docs",
+  "requested": 21,
+  "fetched": 21,
+  "sections": 21,
+  "version": "18",
+  "exceptions": []
+}

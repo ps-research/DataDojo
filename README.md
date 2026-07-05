@@ -1,4 +1,4 @@
-# DataDojo 🥋
+# DataDojo
 
 **The training ground for data skills.** An Online Judge built for data roles — business analysts, data analysts, data engineers, and data scientists — where you solve real analytical problems in SQL (SQLite, DuckDB, PostgreSQL, MySQL/MariaDB) and Python/pandas, judged automatically against hidden test cases.
 
