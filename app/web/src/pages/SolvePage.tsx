@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { api, getAccessToken } from "../lib/api";
+import { api, getAccessToken, ApiRequestError } from "../lib/api";
 import { useTheme } from "../lib/theme";
 import { Split } from "../components/Split";
 import { Markdown } from "../components/Markdown";
 import { BeltBadge, Pill, VerdictBadge, CollectionBadge } from "../components/Badges";
-import { CollapseIcon, ExpandIcon } from "../components/icons";
+import { CollapseIcon, ExpandIcon, HintIcon } from "../components/icons";
 import { collectionKey } from "../lib/collections";
 import { engineLabel } from "../lib/engines";
 import { Spinner } from "../components/Logo";
@@ -65,12 +65,18 @@ export function SolvePage() {
   const [runResult, setRunResult] = useState<(ResultSet & { error?: string; runtimeMs?: number }) | null>(null);
   const [history, setHistory] = useState<SubmissionRow[]>([]);
   const [tab, setTab] = useState<"statement" | "submissions">("statement");
+  const [hint, setHint] = useState<string | null>(null);
+  const [hintLoading, setHintLoading] = useState(false);
+  const [hintError, setHintError] = useState("");
+  const [hintsLeft, setHintsLeft] = useState<number | null>(null);
   const esRef = useRef<EventSource | null>(null);
 
   const codeKey = useCallback((eng: string) => `dojo-code:${slug}:${eng}`, [slug]);
 
   useEffect(() => {
     setLockedInfo(null);
+    setHint(null);
+    setHintError("");
     void api<{ problem: ProblemDetail }>(`/api/problems/${slug}`)
       .then((d) => {
         setProblem(d.problem);
@@ -155,6 +161,24 @@ export function SolvePage() {
       setSubmitting(false);
     }
   }, [problem, engine, code, submitting, codeKey]);
+
+  const getHint = useCallback(async () => {
+    if (!problem || hintLoading) return;
+    setHintLoading(true);
+    setHintError("");
+    try {
+      const d = await api<{ hint: string; remaining: number }>("/api/ai/hint", {
+        method: "POST",
+        body: JSON.stringify({ slug: problem.slug, engine, code }),
+      });
+      setHint(d.hint);
+      setHintsLeft(d.remaining);
+    } catch (err) {
+      setHintError(err instanceof ApiRequestError ? err.message : "Could not get a hint right now.");
+    } finally {
+      setHintLoading(false);
+    }
+  }, [problem, engine, code, hintLoading]);
 
   const run = useCallback(async () => {
     if (!problem || !engine || running) return;
@@ -242,7 +266,7 @@ export function SolvePage() {
         <span className="ml-auto text-xs text-zinc-400">{problem.points} pts</span>
       </div>
 
-      <div className="mb-4 flex gap-1 border-b border-zinc-200 text-sm dark:border-zinc-800">
+      <div className="mb-4 flex items-center gap-1 border-b border-zinc-200 text-sm dark:border-zinc-800">
         {(["statement", "submissions"] as const).map((t) => (
           <button
             key={t}
@@ -256,7 +280,30 @@ export function SolvePage() {
             {t}
           </button>
         ))}
+        <button
+          onClick={() => void getHint()}
+          disabled={hintLoading}
+          className="ml-auto mb-1 inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium text-brand transition-colors hover:bg-brand/10 disabled:opacity-50"
+          title="Get a substantial hint from the AI tutor"
+        >
+          {hintLoading ? <Spinner className="h-3.5 w-3.5" /> : <HintIcon className="h-3.5 w-3.5" />}
+          {hintLoading ? "Thinking" : "Get a hint"}
+        </button>
       </div>
+
+      {(hint || hintError) && tab === "statement" && (
+        <div className="mb-4 rounded-lg border border-brand/25 bg-brand/[0.06] p-3.5">
+          <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-brand">
+            <HintIcon className="h-3.5 w-3.5" /> AI hint
+            {hintsLeft != null && <span className="ml-auto text-zinc-400">{hintsLeft} left this hour</span>}
+          </div>
+          {hintError ? (
+            <p className="text-sm text-rose-600 dark:text-rose-400">{hintError}</p>
+          ) : (
+            <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{hint}</p>
+          )}
+        </div>
+      )}
 
       {tab === "statement" ? (
         <>

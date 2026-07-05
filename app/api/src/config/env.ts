@@ -36,6 +36,11 @@ export const env = {
   },
   judgeTimeoutMs: parseInt(process.env.JUDGE_TIMEOUT_MS ?? "5000", 10),
   fixturesDir: process.env.FIXTURES_DIR ?? "",
+  gemini: {
+    keys: (process.env.GEMINI_API_KEYS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+    model: process.env.GEMINI_MODEL ?? "gemma-4-31b-it",
+  },
+  aiHintsPerHour: parseInt(process.env.AI_HINTS_PER_HOUR ?? "10", 10),
 } as const;
 
 if (env.isProd && env.jwtSecret === "dev-insecure-change-me") {
