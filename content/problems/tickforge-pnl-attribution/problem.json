@@ -1,0 +1,19 @@
+{
+  "slug": "tickforge-pnl-attribution",
+  "universe": "tickforge",
+  "belt": "red",
+  "title": "End-of-Day PnL Attribution across Corporate Actions",
+  "concepts": ["pnl-attribution", "running-reconstruction", "split-adjustment", "mark-carry-forward", "dividend-accrual", "window-functions", "deduplication"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 120,
+  "prerequisites": ["tickforge-position-recon"],
+  "provenance": "tickforge/R2",
+  "landmines": [
+    {"name": "no-split-rebasing", "kills": "naive/1_no_split_rebasing.sql"},
+    {"name": "announced-at-not-ex-date", "kills": "naive/2_announced_not_ex_date.sql"},
+    {"name": "duplicate-fills-not-deduped", "kills": "naive/3_no_dedup.sql"},
+    {"name": "full-grid-recompute-tle", "kills": "naive/4_full_grid_tle.sql"}
+  ],
+  "notes": "Red / G5 adversarial. The three components sum exactly to the daily change in mark-to-market book equity BY CONSTRUCTION -- verified on the sample: across 361 account-instrument-days the max |components - equity_change| is 0.0. Price PnL uses the split-invariant identity q_prev*(CF_d*m_d - CF_prev*m_prev) so a split re-bases shares and mark together with no P&L jump; the split factor is a running product EXP(SUM(LN(mult))). Marks are carried forward over gaps via a last-valid-on-or-before as-of (no IGNORE NULLS, portable). Previous trading session comes from LAG over the session_seq order (never calendar arithmetic). mssql deviation: natural log is LOG(x), so replace LN(...) with LOG(...) -- mssql omitted from engines on that basis. naive/3_no_dedup matches on the mild visible sample (no injected duplicate fills) and fails on the hidden red fixture; naive/4_full_grid_tle is correct but reconstructs the full accounts x instruments x sessions grid -> TLE at red scale. naive/1 (splits) and naive/2 (announced-vs-ex date) already diverge on the visible sample."
+}

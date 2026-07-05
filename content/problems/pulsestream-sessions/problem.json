@@ -1,0 +1,19 @@
+{
+  "slug": "pulsestream-sessions",
+  "universe": "pulsestream",
+  "belt": "black",
+  "title": "Listening-Session Reconstruction",
+  "concepts": ["gaps-and-islands", "window-lag", "running-sum-sessionization", "timestamp-diff", "deduplication", "boundary-dates"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["pulsestream-mau-growth", "pulsestream-skip-rate"],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "order-by-play-id", "kills": "Ordering events by play_id (ingestion order) instead of played_at scrambles session boundaries because the firehose is not chronological. See naive/1_order_by_play_id.sql."},
+    {"name": "gap-off-by-one-30min", "kills": "Using a >= 30-minute gap test instead of > 30 minutes splits a session at an exactly-30-minute gap, inflating the session count. See naive/2_gte_30_boundary.sql."},
+    {"name": "duplicate-events-not-deduped", "kills": "Sessionizing the raw firehose without deduping on (user_id, track_id, played_at) lets retry duplicates inflate session play counts. See naive/4_no_dedup.sql."},
+    {"name": "selfjoin-predecessor-tle", "kills": "Finding each event's predecessor with a correlated self-join is O(n^2) per listener and times out on the multi-million-row hidden fixture; a single LAG window pass is required. See naive/3_selfjoin_predecessor_tle.sql (correct output, TLE)."}
+  ],
+  "notes": "Timestamp gap arithmetic is not portable across the four engines, so a per-engine reference is shipped (reference.sql = SQLite unixepoch; reference.postgres.sql = EXTRACT(EPOCH...); reference.duckdb.sql = date_diff; reference.mysql.sql = TIMESTAMPDIFF) -- all verified to agree on sqlite/duckdb/postgres. mssql omitted (needs DATEDIFF/SUBSTRING). Naives are written in the SQLite dialect matching reference.sql; each landmine's logic error is engine-independent. naive/1 needs play_id order to differ from played_at order (true at hidden scale; proven on a scramble fixture) and naive/4 needs a duplicate event (present at every scale); naive/2 is proven divergent on the worked-example fixture; naive/3 matches output and is the designated TLE naive-slow for section-6 calibration."
+}

@@ -1,8 +1,8 @@
--- NAIVE (WA): finds "never paid" artists with NOT IN against a column that
--- contains NULLs. artist_payouts has unattributed adjustment rows with a NULL
--- artist_id, so `c.artist_id NOT IN (SELECT artist_id FROM artist_payouts)` is
--- UNKNOWN for every row and returns NOTHING -- every 'missing' discrepancy silently
--- disappears (the withheld artists and every unpaid month). NOT EXISTS is required.
+-- NAIVE (WA): finds "never paid" artists with NOT IN against a column that contains
+-- NULLs. artist_payouts has NULL-artist adjustment rows, so
+-- `c.artist_id NOT IN (SELECT artist_id FROM artist_payouts)` is UNKNOWN for every row
+-- and returns NOTHING -- every 'missing' discrepancy silently disappears. NOT EXISTS
+-- / an anti-join is required.
 WITH play_dates AS (
     SELECT play_id, user_id, track_id,
            SUBSTR(CONCAT(played_at, ''), 1, 10)               AS play_date,
@@ -29,7 +29,7 @@ paid_plays AS (
 ),
 play_royalty AS (
     SELECT t.artist_id, pp.period_month,
-           COALESCE(rc.per_play_usd, rg.per_play_usd, 0) AS rate
+           ROUND(COALESCE(rc.per_play_usd, rg.per_play_usd, 0) * 1000000) AS rate_micro
     FROM paid_plays pp
     JOIN tracks t ON t.track_id = pp.track_id
     JOIN users  u ON u.user_id  = pp.user_id
@@ -39,27 +39,36 @@ play_royalty AS (
           AND CONCAT(rg.effective_from, '') <= pp.play_date AND (rg.effective_to IS NULL OR pp.play_date < CONCAT(rg.effective_to, ''))
 ),
 computed AS (
-    SELECT artist_id, period_month, ROUND(SUM(rate), 2) AS computed_usd
-    FROM play_royalty GROUP BY artist_id, period_month HAVING ROUND(SUM(rate), 2) > 0
+    SELECT artist_id, period_month,
+           FLOOR((SUM(rate_micro) + 5000) / 10000.0) AS computed_cents
+    FROM play_royalty
+    GROUP BY artist_id, period_month
+    HAVING SUM(rate_micro) >= 5000        -- reconcile only months that accrued >= 1 cent
 ),
 payout_agg AS (
     SELECT artist_id, CONCAT(period_month, '') AS period_month, 1 AS has_payout,
-           SUM(CASE WHEN status = 'paid' THEN amount_usd ELSE 0 END) AS paid_usd,
-           MAX(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) AS any_paid,
+           SUM(CASE WHEN status = 'paid'    THEN ROUND(amount_usd * 100) ELSE 0 END) AS paid_cents,
+           MAX(CASE WHEN status = 'paid'    THEN 1 ELSE 0 END) AS any_paid,
            MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS any_pending
-    FROM artist_payouts WHERE artist_id IS NOT NULL GROUP BY artist_id, CONCAT(period_month, '')
+    FROM artist_payouts
+    WHERE artist_id IS NOT NULL
+    GROUP BY artist_id, CONCAT(period_month, '')
 )
-SELECT c.artist_id, a.name AS artist_name, c.period_month, c.computed_usd,
-       COALESCE(pa.paid_usd, 0) AS paid_usd,
-       CASE WHEN pa.has_payout IS NULL THEN 'missing'
-            WHEN pa.any_paid = 1 THEN 'paid'
-            WHEN pa.any_pending = 1 THEN 'pending'
-            ELSE 'reversed' END AS payout_status,
-       ROUND(c.computed_usd - COALESCE(pa.paid_usd, 0), 2) AS discrepancy_usd
+SELECT
+    c.artist_id,
+    a.name                                                 AS artist_name,
+    c.period_month,
+    c.computed_cents / 100.0                               AS computed_usd,
+    COALESCE(pa.paid_cents, 0) / 100.0                     AS paid_usd,
+    CASE WHEN pa.has_payout IS NULL THEN 'missing'
+         WHEN pa.any_paid = 1 THEN 'paid'
+         WHEN pa.any_pending = 1 THEN 'pending'
+         ELSE 'reversed' END                               AS payout_status,
+    (c.computed_cents - COALESCE(pa.paid_cents, 0)) / 100.0 AS discrepancy_usd
 FROM computed c
 JOIN artists a ON a.artist_id = c.artist_id
 LEFT JOIN payout_agg pa ON pa.artist_id = c.artist_id AND pa.period_month = c.period_month
 WHERE c.artist_id NOT IN (SELECT artist_id FROM artist_payouts)     -- BUG: NULL row => empty
    OR (pa.has_payout = 1 AND pa.any_paid = 0)
-   OR (pa.any_paid = 1 AND ABS(c.computed_usd - pa.paid_usd) > 0.01)
+   OR (pa.any_paid = 1 AND ABS(c.computed_cents - COALESCE(pa.paid_cents, 0)) > 1)
 ORDER BY c.artist_id, c.period_month;

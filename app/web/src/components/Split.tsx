@@ -68,7 +68,7 @@ export function Split({
             className="group flex w-2 flex-none cursor-col-resize items-stretch justify-center"
             title="Drag to resize · double-click to reset"
           >
-            <div className="w-px bg-stone-200 transition-colors group-hover:w-0.5 group-hover:bg-accent dark:bg-stone-800" />
+            <div className="w-px bg-washi-300 transition-colors group-hover:w-0.5 group-hover:bg-ai dark:bg-sumi-700" />
           </div>
         </>
       )}
