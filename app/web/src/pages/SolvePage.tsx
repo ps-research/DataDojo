@@ -60,8 +60,6 @@ export function SolvePage() {
   const [result, setResult] = useState<VerdictEvent | null>(null);
   const [running, setRunning] = useState(false);
   const [runResult, setRunResult] = useState<(ResultSet & { error?: string; runtimeMs?: number }) | null>(null);
-  const [customData, setCustomData] = useState("");
-  const [showCustom, setShowCustom] = useState(false);
   const [history, setHistory] = useState<SubmissionRow[]>([]);
   const [tab, setTab] = useState<"statement" | "submissions">("statement");
   const esRef = useRef<EventSource | null>(null);
@@ -164,7 +162,7 @@ export function SolvePage() {
         runtimeMs: number;
       }>("/api/submissions/run", {
         method: "POST",
-        body: JSON.stringify({ slug: problem.slug, engine, code, customFixture: customData || undefined }),
+        body: JSON.stringify({ slug: problem.slug, engine, code }),
       });
       if (data.ok) {
         setRunResult({
@@ -182,7 +180,7 @@ export function SolvePage() {
     } finally {
       setRunning(false);
     }
-  }, [problem, engine, code, customData, running, codeKey]);
+  }, [problem, engine, code, running, codeKey]);
   const runRef = useRef(run);
   useEffect(() => {
     runRef.current = run;
@@ -296,13 +294,6 @@ export function SolvePage() {
           ))}
         </select>
         <button
-          onClick={() => setShowCustom((v) => !v)}
-          className={`btn-ghost text-sm ${showCustom ? "bg-zinc-100 dark:bg-zinc-800" : ""}`}
-          title="Provide your own test data to run against"
-        >
-          Custom data
-        </button>
-        <button
           onClick={() => setFocus(!focus)}
           className="btn-ghost h-8 w-8 justify-center p-0"
           title={focus ? "Exit focus mode (Esc)" : "Focus mode"}
@@ -319,19 +310,6 @@ export function SolvePage() {
         </div>
       </div>
 
-      {showCustom && (
-        <div className="flex-none border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
-          <div className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Custom test data (optional). Replaces the sample when you Run. For SQL, write CREATE/INSERT statements.
-          </div>
-          <textarea
-            className="input h-20 font-mono text-xs"
-            placeholder="CREATE TABLE t (...); INSERT INTO t VALUES (...);"
-            value={customData}
-            onChange={(e) => setCustomData(e.target.value)}
-          />
-        </div>
-      )}
 
       <div className="min-h-0 flex-1">
         <Editor
