@@ -1,0 +1,14 @@
+{
+  "stage": "01_ingest_book",
+  "pdf_pages": 573,
+  "pages_with_printed_number": 519,
+  "page_offset": 22,
+  "offset_votes": 518,
+  "offset_outlier_pages": {
+    "572": 175
+  },
+  "toc_recipe_count": 178,
+  "recipes_spanned": 178,
+  "total_spans": 181,
+  "exceptions": []
+}
