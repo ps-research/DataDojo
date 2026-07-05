@@ -1,0 +1,12 @@
+{
+  "stage": "02_parse_recipes",
+  "recipes": 178,
+  "ok": 164,
+  "partial": 0,
+  "failed": 0,
+  "solutions": 415,
+  "exceptions": [
+    "14.2 [ok]: no Discussion section"
+  ],
+  "skipped": 14
+}
