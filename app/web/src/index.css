@@ -2,68 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dojo aesthetic: washi paper by day, sumi ink by night. Restrained texture,
-   serif headings for gravitas, one indigo accent, vermilion reserved for the
-   seal and the red belt. */
+/* Clean and serene: near-white surfaces by day, soft charcoal by night, one
+   calm accent, no texture, no decoration. Space does the work. */
 @layer base {
-  html {
-    @apply antialiased;
-  }
+  html { @apply antialiased; }
   body {
-    @apply bg-washi-100 text-sumi dark:bg-sumi-900 dark:text-washi-100;
-    /* faint paper grain — barely-there fibre texture */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    @apply bg-zinc-50 text-zinc-800 dark:bg-zinc-950 dark:text-zinc-200;
+    font-feature-settings: "cv11", "ss01";
   }
-  ::selection {
-    @apply bg-ai/20;
-  }
-  h1, h2, h3 {
-    @apply font-serif;
-  }
+  ::selection { @apply bg-brand/15; }
 }
 
 @layer components {
   .card {
-    @apply rounded-lg border border-washi-300 bg-washi-50 dark:border-sumi-700 dark:bg-sumi-800;
+    @apply rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900;
   }
   .btn {
-    @apply inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors
-           focus-visible:outline focus-visible:outline-2 focus-visible:outline-ai/60 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium
+           transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1
+           focus-visible:outline-brand/50 disabled:opacity-50;
   }
-  .btn-primary {
-    @apply btn bg-ai text-washi-50 hover:bg-ai-dark;
-  }
+  .btn-primary { @apply btn bg-brand text-white hover:bg-brand-hover; }
   .btn-ghost {
-    @apply btn text-sumi/70 hover:bg-washi-200 dark:text-washi-100/70 dark:hover:bg-sumi-700;
+    @apply btn text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800;
   }
   .input {
-    @apply w-full rounded-md border border-washi-300 bg-washi-50 px-3 py-2 text-sm
-           placeholder:text-sumi/40 focus:border-ai focus:outline-none
-           dark:border-sumi-700 dark:bg-sumi-900 dark:placeholder:text-washi-100/30;
+    @apply w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-sm
+           placeholder:text-zinc-400 focus:border-brand focus:ring-2 focus:ring-brand/15 focus:outline-none
+           dark:border-zinc-700 dark:bg-zinc-900 dark:placeholder:text-zinc-500;
   }
-  /* kanji secondary label — quiet, brush-like */
-  .kanji {
-    @apply font-serif text-sumi/35 dark:text-washi-100/30;
-  }
-  /* red seal stamp (hanko) for solved problems */
-  .seal {
-    @apply inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-shu
-           font-serif text-[11px] font-bold text-shu;
-  }
+  .link { @apply text-brand hover:underline; }
 }
 
-/* Markdown statement rendering */
-.statement { @apply text-sm leading-relaxed; }
-.statement h1, .statement h2, .statement h3 { @apply mt-5 mb-2 font-serif font-semibold text-sumi dark:text-washi-50; }
+/* Markdown statement rendering — clean, readable */
+.statement { @apply text-sm leading-relaxed text-zinc-700 dark:text-zinc-300; }
+.statement h1, .statement h2, .statement h3 { @apply mt-5 mb-2 font-semibold text-zinc-900 dark:text-zinc-100; }
 .statement h1 { @apply text-lg; }
 .statement h2 { @apply text-base; }
 .statement p { @apply my-2.5; }
-.statement code { @apply rounded bg-washi-200 px-1 py-0.5 font-mono text-[0.85em] dark:bg-sumi-900; }
-.statement pre { @apply my-3 overflow-x-auto rounded-md bg-washi-200 p-3 dark:bg-sumi-900; }
+.statement code { @apply rounded bg-zinc-100 px-1 py-0.5 font-mono text-[0.85em] dark:bg-zinc-800; }
+.statement pre { @apply my-3 overflow-x-auto rounded-lg bg-zinc-100 p-3 dark:bg-zinc-800; }
 .statement pre code { @apply bg-transparent p-0; }
 .statement table { @apply my-3 w-auto border-collapse text-sm; }
-.statement th, .statement td { @apply border border-washi-300 px-2.5 py-1.5 text-left dark:border-sumi-700; }
-.statement th { @apply bg-washi-200 font-medium dark:bg-sumi-900; }
+.statement th, .statement td { @apply border border-zinc-200 px-2.5 py-1.5 text-left dark:border-zinc-700; }
+.statement th { @apply bg-zinc-100 font-medium dark:bg-zinc-800; }
 .statement ul, .statement ol { @apply my-2.5 ml-5 list-disc; }
 .statement ol { @apply list-decimal; }
-.statement strong { @apply font-semibold text-sumi dark:text-washi-50; }
+.statement strong { @apply font-semibold text-zinc-900 dark:text-zinc-100; }

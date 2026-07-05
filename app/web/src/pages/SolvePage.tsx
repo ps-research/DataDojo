@@ -154,7 +154,7 @@ export function SolvePage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-24 text-center">
         <h1 className="text-lg font-semibold">This problem is locked</h1>
-        <p className="mt-2 text-sm text-sumi/55 dark:text-sumi/40">
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
           Earn it: solve the prerequisite first.
         </p>
         <div className="mt-4 flex justify-center gap-2">
@@ -169,7 +169,7 @@ export function SolvePage() {
   }
 
   if (!problem) {
-    return <div className="p-10 text-center text-sm text-sumi/40">Loading problem...</div>;
+    return <div className="p-10 text-center text-sm text-zinc-400">Loading problem...</div>;
   }
 
   const statementPanel = (
@@ -180,18 +180,18 @@ export function SolvePage() {
         </h1>
         <BeltBadge belt={problem.belt} />
         {problem.universe && <Pill>{problem.universe}</Pill>}
-        <span className="ml-auto text-xs text-sumi/40">{problem.points} pts</span>
+        <span className="ml-auto text-xs text-zinc-400">{problem.points} pts</span>
       </div>
 
-      <div className="mb-4 flex gap-1 border-b border-washi-300 text-sm dark:border-sumi-700">
+      <div className="mb-4 flex gap-1 border-b border-zinc-200 text-sm dark:border-zinc-800">
         {(["statement", "submissions"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`-mb-px border-b-2 px-3 py-1.5 capitalize transition-colors ${
               tab === t
-                ? "border-ai font-medium text-sumi dark:text-washi-50"
-                : "border-transparent text-sumi/40 hover:text-sumi/70 dark:hover:text-washi-100/80"
+                ? "border-brand font-medium text-zinc-800 dark:text-zinc-100"
+                : "border-transparent text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
             }`}
           >
             {t}
@@ -204,8 +204,8 @@ export function SolvePage() {
           <Markdown source={problem.statementMd} />
           {problem.schemaPreview && (
             <div className="mt-5">
-              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-sumi/40">Schema</h3>
-              <pre className="overflow-x-auto rounded-md bg-washi-200 p-3 font-mono text-xs leading-relaxed dark:bg-sumi-700">
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-zinc-400">Schema</h3>
+              <pre className="overflow-x-auto rounded-md bg-zinc-100 p-3 font-mono text-xs leading-relaxed dark:bg-zinc-800">
                 {problem.schemaPreview}
               </pre>
             </div>
@@ -220,13 +220,13 @@ export function SolvePage() {
         </>
       ) : (
         <div className="space-y-1.5">
-          {history.length === 0 && <p className="text-sm text-sumi/40">No submissions yet.</p>}
+          {history.length === 0 && <p className="text-sm text-zinc-400">No submissions yet.</p>}
           {history.map((s) => (
-            <div key={s.id} className="flex items-center gap-3 rounded-md bg-washi-100 px-3 py-2 text-xs dark:bg-sumi-700/50">
+            <div key={s.id} className="flex items-center gap-3 rounded-md bg-zinc-50 px-3 py-2 text-xs dark:bg-zinc-800/50">
               <VerdictBadge verdict={s.verdict} />
-              <span className="text-sumi/55 dark:text-sumi/40">{s.engine}</span>
-              <span className="text-sumi/40">{s.runtimeMs} ms</span>
-              <span className="ml-auto text-sumi/40">{new Date(s.createdAt).toLocaleTimeString()}</span>
+              <span className="text-zinc-500 dark:text-zinc-400">{s.engine}</span>
+              <span className="text-zinc-400">{s.runtimeMs} ms</span>
+              <span className="ml-auto text-zinc-400">{new Date(s.createdAt).toLocaleTimeString()}</span>
             </div>
           ))}
         </div>
@@ -236,7 +236,7 @@ export function SolvePage() {
 
   const editorPanel = (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex flex-none items-center gap-2 border-b border-washi-300 px-3 py-2 dark:border-sumi-700">
+      <div className="flex flex-none items-center gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
         <select className="input w-auto py-1.5" value={engine} onChange={(e) => switchEngine(e.target.value)}>
           {problem.engines.map((e) => (
             <option key={e.engine} value={e.engine} disabled={!e.available}>
@@ -253,7 +253,7 @@ export function SolvePage() {
           {focus ? <CollapseIcon /> : <ExpandIcon />}
         </button>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden text-xs text-sumi/40 md:inline">Ctrl+Enter to submit</span>
+          <span className="hidden text-xs text-zinc-400 md:inline">Ctrl+Enter to submit</span>
           <button onClick={() => void submit()} disabled={submitting} className="btn-primary">
             {submitting ? "Judging..." : "Submit"}
           </button>
@@ -286,12 +286,12 @@ export function SolvePage() {
           className={`flex flex-none items-start gap-3 border-t px-4 py-3 text-sm ${
             result.verdict === "AC"
               ? "border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/40"
-              : "border-washi-300 bg-washi-100 dark:border-sumi-700 dark:bg-sumi-800"
+              : "border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
           }`}
         >
           <VerdictBadge verdict={result.verdict} />
-          <p className="min-w-0 flex-1 text-sumi/70 dark:text-washi-100/70">{result.message}</p>
-          <span className="flex-none text-xs text-sumi/40">{result.runtimeMs} ms</span>
+          <p className="min-w-0 flex-1 text-zinc-600 dark:text-zinc-300">{result.message}</p>
+          <span className="flex-none text-xs text-zinc-400">{result.runtimeMs} ms</span>
         </div>
       )}
     </div>

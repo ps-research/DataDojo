@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { ThemeProvider } from "./lib/theme";
 import { Navbar } from "./components/Navbar";
-import { Enso } from "./components/Enso";
+import { Spinner } from "./components/Logo";
 import { LoginPage } from "./pages/LoginPage";
 import { ProblemsPage } from "./pages/ProblemsPage";
 import { SolvePage } from "./pages/SolvePage";
@@ -11,14 +11,13 @@ import { LeaderboardPage } from "./pages/LeaderboardPage";
 
 function BootScreen() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-3">
-      <Enso className="h-10 w-10 text-ai" spin />
-      <p className="text-sm text-sumi/50 dark:text-washi-100/50">Opening the dojo...</p>
+    <div className="flex min-h-screen items-center justify-center text-zinc-400">
+      <Spinner className="h-6 w-6" />
     </div>
   );
 }
 
-// The whole dojo is gated: cross the entrance (login) before you may train.
+// The whole site is gated: sign in before entering.
 function Gated({ children }: { children: ReactNode }) {
   const { user, booting } = useAuth();
   const location = useLocation();
