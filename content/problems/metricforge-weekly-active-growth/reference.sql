@@ -76,4 +76,4 @@ wau AS (SELECT wk, COUNT(*) AS wau FROM active GROUP BY wk),
 allw AS (SELECT c.wk AS wk, c.wk_start AS week_start, COALESCE(w.wau,0) AS wau FROM cal c LEFT JOIN wau w ON w.wk=c.wk)
 SELECT week_start, wau,
   ROUND(1.0*(wau - LAG(wau) OVER (ORDER BY wk))/NULLIF(LAG(wau) OVER (ORDER BY wk),0),6) AS wow_growth
-FROM allw ORDER BY wk;
+FROM allw ORDER BY week_start;

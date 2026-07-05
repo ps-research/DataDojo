@@ -19,10 +19,15 @@ if [ ! -f "$ROOT/app/api/.env" ]; then
   echo "generated .env with fresh JWT_SECRET"
 fi
 
-# --- Web: install, build ---
+# --- Web: install, build, publish to a www-data-readable dir ---
 cd "$ROOT/app/web"
 npm install --no-audit --no-fund
 npm run build
+mkdir -p /var/www/datadojo
+rm -rf /var/www/datadojo/*
+cp -r "$ROOT/app/web/dist/"* /var/www/datadojo/
+chown -R www-data:www-data /var/www/datadojo
+chmod -R a+rX /var/www/datadojo
 
 # --- systemd service ---
 cp "$ROOT/deploy/datadojo-api.service" /etc/systemd/system/datadojo-api.service

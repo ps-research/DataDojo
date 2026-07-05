@@ -1,0 +1,18 @@
+{
+  "slug": "metricforge-experiment-lift",
+  "universe": "metricforge",
+  "belt": "black",
+  "title": "A/B Experiment Lift with Assignment Contamination",
+  "concepts": ["contamination-filter", "interval-overlap", "anti-join", "null-handling", "conditional-aggregation", "fan-out-avoidance", "nullif-guard", "dedup"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 70,
+  "prerequisites": ["metricforge-funnel-conversion"],
+  "provenance": "metricforge:BK2",
+  "landmines": [
+    {"name": "assignment-join-fanout", "kills": "naive/1_join_fanout.sql -- joining experiment_assignments to events (and to duplicate/both-variant assignment rows) with no de-duplication and no contamination filter multiplies a user's conversions by their event count and keeps contaminated users, producing a confidently wrong per-variant rate."},
+    {"name": "running-experiment-null-end", "kills": "naive/2_null_end_overlap.sql -- computing experiment time-overlap with a raw end_date leaves a RUNNING experiment's NULL end_date out of the comparison (NULL is never true), so a user contaminated by an overlapping running experiment is missed and wrongly kept; the reference COALESCEs the NULL end to the window end."},
+    {"name": "correlated-conversion-scan", "kills": "naive/3_correlated_slow.sql -- testing conversion with a correlated per-user EXISTS scan of events instead of a single join+aggregate is correct but TLE-slow at black scale (the designated naive-slow)."}
+  ],
+  "notes": "Only completed experiments (status='completed' AND end_date IS NOT NULL). A user is contaminated for an experiment if (a) they hold both variants within it (GROUP BY exp,user HAVING COUNT(DISTINCT variant)>1) or (b) they are assigned to any OTHER experiment whose active interval overlaps this one; overlap uses COALESCE(end_date, '2025-03-31') so RUNNING experiments count. Contaminated users are excluded per experiment; surviving assignments are de-duplicated to one row per (experiment,user) with the earliest assigned_ts and their single variant. A user converts if they performed the experiment's primary_metric event with event_ts > assigned_ts; conversion is aggregated per user (MAX over a LEFT JOIN to events) BEFORE counting, so no fan-out. Per-variant rate = conversions/users with NULLIF; lift = treatment_rate - control_rate. Completed experiments with a zero-user variant still appear with NULL rate/lift (LEFT JOIN from the completed-experiment list). orderMatters=false (lift may be NULL; the grader sorts). Some experiments carry a primary_metric ('activation') that never occurs as an event_type, so their rate is a legitimate 0. naive/3 is the designated slow solution."
+}

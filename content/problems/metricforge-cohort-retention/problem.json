@@ -1,0 +1,18 @@
+{
+  "slug": "metricforge-cohort-retention",
+  "universe": "metricforge",
+  "belt": "black",
+  "title": "Signup-Cohort Retention Matrix (W0-W8)",
+  "concepts": ["cohort-analysis", "retention", "date-bucketing", "week-offset", "boundary-dates", "conditional-aggregation", "count-distinct", "left-join-spine", "gaps-and-islands", "nullif-guard"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["metricforge-weekly-active-growth"],
+  "provenance": "metricforge:BK1",
+  "landmines": [
+    {"name": "week-offset-year-normalisation", "kills": "naive/1_weekofyear_offset.sql -- computing the offset as (active_week_of_year - signup_week_of_year) with a year-agnostic week-of-year conflates the same week number across 2024 and 2025 and goes negative across the boundary, misassigning entire cohorts; the offset must be the difference of monotonic week indices."},
+    {"name": "internal-users-not-excluded", "kills": "naive/2_include_internal.sql -- leaving is_internal=1 users in inflates both cohort sizes and active counts; real retention excludes staff/QA/test users."},
+    {"name": "event-to-event-quadratic", "kills": "naive/3_correlated_slow.sql -- a correlated re-scan of events for every (cohort, offset) cell (equivalently an events-to-events self-join) is quadratic and TLE-slow at black scale; the reference pre-aggregates to a distinct per-user-per-week grid first (this is the designated naive-slow)."}
+  ],
+  "notes": "Cohort = the Monday-anchored week of signup_ts (monotonic index from a literal calendar CTE, no reset at the 2024/2025 boundary). Per-user activity weeks are DISTINCT (user_id, week) so duplicate/double-fired events do not inflate activity (an active week is present or not, gaps and islands intact). week_offset = active_week_index - signup_week_index, kept for offsets 0..8. Every (cohort, offset in 0..8) cell is emitted via a CROSS JOIN of cohorts to a 0..8 offset spine LEFT JOINed to the counts, so an empty offset cell reads 0 rather than vanishing. cohort_size counts non-internal cohort users (W0 denominator); retention_rate = active_users / cohort_size, NULLIF-guarded. is_internal=1 users are excluded from both cohort_size and active_users. orderMatters=true, (cohort_week, week_offset) both non-null. naive/1 is the SQLite-dialect (strftime %W) representative of the raw week-of-year subtraction bug; its divergence is proven on the purple-scale fixture, naive/2 on the sample, naive/3 is TLE-only (identical output to the reference on the sample)."
+}

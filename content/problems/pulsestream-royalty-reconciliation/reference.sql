@@ -8,19 +8,20 @@
 -- (artist, accounting month), then reconcile against artist_payouts and surface
 -- every artist-month whose paid amount does not match within one cent.
 --
--- All date logic uses lexical comparison of the ISO date/timestamp strings, which
--- is chronological and fully portable across engines.
+-- Portability: every date/timestamp is coerced to its ISO text form with
+-- CONCAT(col, '') and compared lexically (which is chronological for ISO dates),
+-- so a single query runs on sqlite, duckdb, postgres and mysql.
 WITH play_dates AS (
     SELECT
         play_id,
         user_id,
         track_id,
-        SUBSTR(played_at, 1, 10)             AS play_date,
-        SUBSTR(played_at, 1, 7) || '-01'     AS period_month
+        SUBSTR(CONCAT(played_at, ''), 1, 10)                      AS play_date,
+        CONCAT(SUBSTR(CONCAT(played_at, ''), 1, 7), '-01')        AS period_month
     FROM plays
 ),
--- Rank the subscriptions active on the play date; the winner is the highest
--- plan precedence (premium > family > student > trial > free), latest start.
+-- Rank the subscriptions active on the play date; the winner is the highest plan
+-- precedence (premium > family > student > trial > free), latest start.
 active_plan AS (
     SELECT
         pd.play_id,
@@ -42,8 +43,8 @@ active_plan AS (
     FROM play_dates pd
     JOIN subscriptions s
       ON s.user_id = pd.user_id
-     AND s.started_at <= pd.play_date
-     AND (s.ended_at IS NULL OR pd.play_date <= s.ended_at)
+     AND CONCAT(s.started_at, '') <= pd.play_date
+     AND (s.ended_at IS NULL OR pd.play_date <= CONCAT(s.ended_at, ''))
 ),
 paid_plays AS (
     SELECT play_id, track_id, user_id, play_date, period_month, plan
@@ -63,13 +64,13 @@ play_royalty AS (
     LEFT JOIN royalty_rates rc
            ON rc.plan = pp.plan
           AND rc.country = u.country
-          AND rc.effective_from <= pp.play_date
-          AND (rc.effective_to IS NULL OR pp.play_date < rc.effective_to)
+          AND CONCAT(rc.effective_from, '') <= pp.play_date
+          AND (rc.effective_to IS NULL OR pp.play_date < CONCAT(rc.effective_to, ''))
     LEFT JOIN royalty_rates rg
            ON rg.plan = pp.plan
           AND rg.country IS NULL
-          AND rg.effective_from <= pp.play_date
-          AND (rg.effective_to IS NULL OR pp.play_date < rg.effective_to)
+          AND CONCAT(rg.effective_from, '') <= pp.play_date
+          AND (rg.effective_to IS NULL OR pp.play_date < CONCAT(rg.effective_to, ''))
 ),
 computed AS (
     SELECT
@@ -83,14 +84,14 @@ computed AS (
 payout_agg AS (
     SELECT
         artist_id,
-        period_month,
+        CONCAT(period_month, '')                                    AS period_month,
         1                                                          AS has_payout,
         SUM(CASE WHEN status = 'paid'    THEN amount_usd ELSE 0 END) AS paid_usd,
         MAX(CASE WHEN status = 'paid'    THEN 1 ELSE 0 END)          AS any_paid,
         MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END)          AS any_pending
     FROM artist_payouts
     WHERE artist_id IS NOT NULL
-    GROUP BY artist_id, period_month
+    GROUP BY artist_id, CONCAT(period_month, '')
 )
 SELECT
     c.artist_id,

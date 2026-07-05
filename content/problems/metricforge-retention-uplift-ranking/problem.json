@@ -1,0 +1,19 @@
+{
+  "slug": "metricforge-retention-uplift-ranking",
+  "universe": "metricforge",
+  "belt": "red",
+  "title": "Retention-Qualified Experiment Uplift Ranking",
+  "concepts": ["gaps-and-islands", "consecutive-streak", "contamination-filter", "interval-overlap", "week-offset", "boundary-dates", "anti-join", "conversion-window", "nullif-guard", "deterministic-ranking", "multi-key-tiebreak", "fan-out-avoidance"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 120,
+  "prerequisites": ["metricforge-cohort-retention", "metricforge-experiment-lift"],
+  "provenance": "metricforge:R1",
+  "landmines": [
+    {"name": "consecutive-island-not-total-count", "kills": "naive/1_total_weeks_not_island.sql -- qualifying engaged users by a TOTAL post-assignment active-week count (COUNT(DISTINCT week) >= K) admits users with a gap between weeks; qualification requires an UNBROKEN island: a session in EACH of the first K=2 consecutive weeks after the assignment week."},
+    {"name": "contamination-and-internal-kept", "kills": "naive/2_no_contamination_filter.sql -- reusing the fan-out-prone assignment set without dropping both-variant / multi-experiment-overlap users and internal users changes the qualified cohort and the rates."},
+    {"name": "rank-without-full-tiebreak", "kills": "naive/3_rank_without_tiebreak.sql -- ranking by uplift alone (ROW_NUMBER over uplift, or omitting the qualified_size tie-break) gives tied uplifts an arbitrary order that disagrees with the reference; ties break by qualified_size DESC then experiment_key ASC."},
+    {"name": "event-level-selfjoin-quadratic", "kills": "naive/4_correlated_slow.sql -- driving qualification and conversion off correlated per-user event/session scans (equivalently event-level self-joins) is quadratic and TLE-slow at red scale; the reference pre-aggregates to a distinct per-user-per-week grid and joins set-based (the designated naive-slow)."}
+  ],
+  "notes": "K=2. Only completed experiments (status='completed' AND end_date IS NOT NULL). Contamination and de-duplication are identical to metricforge-experiment-lift (both-variant OR overlap with any other experiment, COALESCE(end_date,'2025-03-31') so running experiments count), and internal users (is_internal=1) are additionally excluded. A clean user is RETENTION-QUALIFIED only if they have >=1 session in EACH of the two consecutive weeks immediately following their assignment week (weeks assign_wk+1 and assign_wk+2, a Monday-anchored monotonic index that does not reset at the 2024/2025 boundary) -- an unbroken island, no gap; sessions collapse to DISTINCT (user,week) so duplicates/late events do not fabricate a week. Conversion: primary_metric event with event_ts > assigned_ts. Per-variant rate = conversions/qualified with NULLIF. uplift = treatment_rate - control_rate. Experiments with zero qualified users in EITHER variant are excluded from the ranking (documented exclusion), so every ranked uplift is defined and ORDER BY is portable. rank_pos = ROW_NUMBER over (uplift DESC, qualified_size DESC, experiment_key ASC) -- a total order (experiment_key unique), so RANK and ROW_NUMBER agree. orderMatters=true, rank_pos ascending. VERIFICATION: the visible sample fixture (24 users) is too small for any experiment to have qualified users in both variants, so the reference returns an EMPTY set there (documented); the mechanics, the worked example, and every naive divergence were verified on a constructed micro-fixture and on the purple-scale fixture (WA for naive/1,2,3; identical output for the TLE naive/4)."
+}

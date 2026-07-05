@@ -1,0 +1,17 @@
+{
+  "slug": "metricforge-weekly-active-growth",
+  "universe": "metricforge",
+  "belt": "purple",
+  "title": "Weekly Active Users and Week-over-Week Growth",
+  "concepts": ["date-bucketing", "iso-week", "count-distinct", "window-lag", "growth-rate", "boundary-dates", "nullif-guard", "filter"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["metricforge-feature-adoption"],
+  "provenance": "metricforge:P2",
+  "landmines": [
+    {"name": "rows-and-internal-users", "kills": "naive/1_rows_and_internal.sql -- COUNT(*) counts event rows (repeat activity + double-fires) instead of COUNT(DISTINCT user_id), and forgetting is_internal=0 leaves staff/QA/test traffic in the active count."},
+    {"name": "year-reset-week-numbering", "kills": "naive/2_yearreset_week.sql -- bucketing by a year-agnostic week label (year || week-of-year) resets the counter at the 2024/2025 boundary and mis-numbers week 53 / week 00, splitting or merging the boundary weeks; the correct bucket is a monotonic Monday-anchored week that never resets."}
+  ],
+  "notes": "Weeks are Monday-anchored 7-day buckets built from a literal calendar CTE (the window starts Monday 2024-01-01), giving a MONOTONIC week index that does not reset at the 2024/2025 year boundary and aligns with ISO weeks; each week is labelled by its Monday (week_start). This is the portable substitute for a per-engine ISO-week function. Events map to a week by half-open range (wk_start <= event_ts < wk_end). WAU = COUNT(DISTINCT user_id) with is_internal=0. Every calendar week 2024-01-01..2025-03-31 is reported (LEFT JOIN calendar), so a zero-activity week reads 0. wow_growth = (wau - prev_wau)/prev_wau via LAG over week order, guarded with NULLIF(prev,0): the first week (no predecessor) and any week following a zero-activity week are NULL, not 0 and not an error. orderMatters=true, week_start ascending (a non-null date string, deterministic). naive/2 is the SQLite-dialect form of the year-reset bug (the same failure appears as EXTRACT/to_char/YEARWEEK on other engines)."
+}

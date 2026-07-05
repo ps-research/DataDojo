@@ -1,12 +1,13 @@
 -- NAIVE (WA): the active-subscription predicate omits the NULL guard on ended_at.
--- `play_date <= s.ended_at` is UNKNOWN when ended_at is NULL, so every play made
--- under a still-active (open-ended) subscription is dropped. Those are exactly the
--- current premium/family listeners, so a large share of royalty vanishes and the
--- whole reconciliation is wrong. NULL ended_at means "still active", not "excluded".
+-- With ended_at NULL the comparison `play_date <= CONCAT(ended_at,'')` is false /
+-- UNKNOWN on every engine, so every play made under a still-active (open-ended)
+-- subscription is dropped. Those are exactly the current premium/family listeners,
+-- so a large share of royalty vanishes and the reconciliation is wrong. NULL
+-- ended_at means "still active", not "excluded".
 WITH play_dates AS (
     SELECT play_id, user_id, track_id,
-           SUBSTR(played_at, 1, 10)         AS play_date,
-           SUBSTR(played_at, 1, 7) || '-01' AS period_month
+           SUBSTR(CONCAT(played_at, ''), 1, 10)               AS play_date,
+           CONCAT(SUBSTR(CONCAT(played_at, ''), 1, 7), '-01') AS period_month
     FROM plays
 ),
 active_plan AS (
@@ -20,8 +21,8 @@ active_plan AS (
     FROM play_dates pd
     JOIN subscriptions s
       ON s.user_id = pd.user_id
-     AND s.started_at <= pd.play_date
-     AND pd.play_date <= s.ended_at            -- BUG: drops open-ended (NULL) subs
+     AND CONCAT(s.started_at, '') <= pd.play_date
+     AND pd.play_date <= CONCAT(s.ended_at, '')      -- BUG: drops open-ended (NULL) subs
 ),
 paid_plays AS (
     SELECT play_id, track_id, user_id, play_date, period_month, plan
@@ -34,20 +35,20 @@ play_royalty AS (
     JOIN tracks t ON t.track_id = pp.track_id
     JOIN users  u ON u.user_id  = pp.user_id
     LEFT JOIN royalty_rates rc ON rc.plan = pp.plan AND rc.country = u.country
-          AND rc.effective_from <= pp.play_date AND (rc.effective_to IS NULL OR pp.play_date < rc.effective_to)
+          AND CONCAT(rc.effective_from, '') <= pp.play_date AND (rc.effective_to IS NULL OR pp.play_date < CONCAT(rc.effective_to, ''))
     LEFT JOIN royalty_rates rg ON rg.plan = pp.plan AND rg.country IS NULL
-          AND rg.effective_from <= pp.play_date AND (rg.effective_to IS NULL OR pp.play_date < rg.effective_to)
+          AND CONCAT(rg.effective_from, '') <= pp.play_date AND (rg.effective_to IS NULL OR pp.play_date < CONCAT(rg.effective_to, ''))
 ),
 computed AS (
     SELECT artist_id, period_month, ROUND(SUM(rate), 2) AS computed_usd
     FROM play_royalty GROUP BY artist_id, period_month HAVING ROUND(SUM(rate), 2) > 0
 ),
 payout_agg AS (
-    SELECT artist_id, period_month, 1 AS has_payout,
+    SELECT artist_id, CONCAT(period_month, '') AS period_month, 1 AS has_payout,
            SUM(CASE WHEN status = 'paid' THEN amount_usd ELSE 0 END) AS paid_usd,
            MAX(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) AS any_paid,
            MAX(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS any_pending
-    FROM artist_payouts WHERE artist_id IS NOT NULL GROUP BY artist_id, period_month
+    FROM artist_payouts WHERE artist_id IS NOT NULL GROUP BY artist_id, CONCAT(period_month, '')
 )
 SELECT c.artist_id, a.name AS artist_name, c.period_month, c.computed_usd,
        COALESCE(pa.paid_usd, 0) AS paid_usd,

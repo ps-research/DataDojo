@@ -1,0 +1,19 @@
+{
+  "slug": "tickforge-best-ex-scorecard",
+  "universe": "tickforge",
+  "belt": "red",
+  "title": "Adverse-Selection Best-Execution Scorecard",
+  "concepts": ["dual-as-of-join", "markout", "percent-rank", "dense-rank", "null-cohorting", "deduplication", "guarded-division", "window-functions"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 120,
+  "prerequisites": ["tickforge-vwap-slippage"],
+  "provenance": "tickforge/R1",
+  "landmines": [
+    {"name": "null-sector-cohort-dropped", "kills": "naive/1_null_sector_dropped.sql"},
+    {"name": "rownumber-drops-tied-twin", "kills": "naive/2_rownumber_twin.sql"},
+    {"name": "dirty-quote-mids", "kills": "naive/3_dirty_mid.sql"},
+    {"name": "correlated-dual-asof-tle", "kills": "naive/4_correlated_dual_asof_tle.sql"}
+  ],
+  "notes": "Red / G5 adversarial. Reference is portable to all five engines (window functions only; no timestamp arithmetic, no string parsing). The markout horizon is the next valid quote strictly after the fill (rank+1 in the same event stream), which keeps it engine-portable while still exercising a forward as-of and the missing-future-quote guard. naive/1_null_sector_dropped and naive/4_correlated_dual_asof_tle match the reference on the small mild visible sample (no NULL sectors exist below 13 instruments; the tiny input never times out); they fail on the hidden red fixture as WA and TLE respectively. naive/2 and naive/3 already diverge on the visible sample. Sector percentiles are single-member (=0) on the sample and only become meaningful at red scale (~82 names per sector)."
+}

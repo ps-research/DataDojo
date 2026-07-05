@@ -1,0 +1,19 @@
+{
+  "slug": "rideloop-active-streak",
+  "universe": "rideloop",
+  "belt": "black",
+  "title": "Longest Streak of Consecutive Active Days per Driver",
+  "concepts": ["gaps-and-islands", "window-function", "row-number", "rank", "distinct-grain", "date-arithmetic", "tie-aware-ranking"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["rideloop-first-ride-cohort"],
+  "provenance": "rideloop:Bk2",
+  "landmines": [
+    {"name": "total-days-not-consecutive", "kills": "COUNT(DISTINCT active_day) reports total active days, not the longest consecutive run; a driver active every Saturday scores high with a true streak of 1."},
+    {"name": "span-overcounts-gaps", "kills": "(MAX(day) - MIN(day) + 1) is the calendar span; every day off inside it is counted as active, wildly overstating the run."},
+    {"name": "no-day-dedup-island-corruption", "kills": "Building the (day - ROW_NUMBER) island key off raw completed-trip rows without deduping to distinct (driver, day) lets a doubled day outrun the row number, splitting real runs; the true max streak on the purple fixture (250) collapses to 38."},
+    {"name": "rownumber-drops-tied-drivers", "kills": "ROW_NUMBER() for the leaderboard keeps exactly one of the drivers tied at the maximum streak and drops the rest; RANK()/DENSE_RANK() is required to return all ties."}
+  ],
+  "notes": "Black: canonical gaps-and-islands with a tie-aware top. Active day = completion (dropoff) date; DISTINCT (driver, day) before the island key; day arithmetic (not day-of-month) so runs cross month ends and 2024-02-29. reference.sql is SQLite (julianday); reference.postgres.sql (date - int), reference.mysql.sql (DATEDIFF epoch), reference.duckdb.sql (DATE_DIFF epoch) provide the island key per engine. mssql: active_day = CAST(dropoff_ts AS DATE), island_key = DATEDIFF(day,'1970-01-01',active_day) - ROW_NUMBER(...). Self-verified on SQLite: reference returns drivers 1,7,9 tied at 3; naives 1,2,4 diverge on the sample; naive 3 (no dedup) coincides on the tiny sample but diverges on the purple fixture (250 vs 38)."
+}

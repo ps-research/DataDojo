@@ -1,0 +1,19 @@
+{
+  "slug": "pulsestream-royalty-reconciliation",
+  "universe": "pulsestream",
+  "belt": "black",
+  "title": "Royalty Attribution and Payout Reconciliation",
+  "concepts": ["temporal-as-of-join", "plan-precedence", "half-open-ranges", "country-global-fallback", "anti-join", "reconciliation", "window-ranking", "null-semantics"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["pulsestream-signature-genre", "pulsestream-skip-rate"],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "overlapping-subscription-fanout", "kills": "Joining every active subscription (no precedence tiebreak) double-counts royalties for listeners whose paid periods overlap; the highest-precedence plan must be picked once. See naive/1_between_fanout.sql."},
+    {"name": "not-in-with-null-artist", "kills": "artist_payouts has NULL-artist adjustment rows, so NOT IN for the never-paid set returns empty and drops every 'missing' discrepancy; an anti-join / NOT EXISTS is required. See naive/2_not_in_never_paid.sql."},
+    {"name": "null-ended-at-dropped", "kills": "Omitting the NULL guard on ended_at drops every play made under a still-active (open-ended) subscription, erasing most current royalty. NULL ended_at means still active. See naive/3_null_ended_dropped.sql."},
+    {"name": "correlated-plan-resolver-tle", "kills": "Resolving the active plan with a per-play correlated subquery is O(plays x subscriptions) and times out on the multi-million-row hidden fixture; the reference resolves all plans in one windowed pass. See naive/4_correlated_plan_tle.sql (correct output, TLE)."}
+  ],
+  "notes": "Date/timestamp logic is portable via CONCAT(col,'') ISO-text coercion + lexical comparison (verified identical on sqlite, duckdb, postgres). mssql omitted: needs SUBSTRING/'+'-concat and TOP instead of this form. computed_usd/paid_usd are rounded to cents; classification uses a strict 1-cent tolerance so sub-cent float-order wobble never flips a category (real discrepancies are >=10%). naive/1 (fan-out) and naive/3 (null ended_at) require overlapping subs / open-ended subs to diverge, which are present at every real scale (proven divergent on the micro worked-example across all three engines and at hidden scale); naive/2 requires the NULL-artist payout row (present at every scale, proven divergent on the sample); naive/4 matches the reference output but is the designated TLE naive-slow for section-6 calibration."
+}

@@ -3,10 +3,10 @@
 -- disagrees with the reference on the very first row.
 WITH monthly AS (
     SELECT
-        SUBSTR(played_at, 1, 7) AS month,
-        COUNT(DISTINCT user_id) AS active_listeners
+        SUBSTR(CONCAT(played_at, ''), 1, 7) AS month,
+        COUNT(DISTINCT user_id)             AS active_listeners
     FROM plays
-    GROUP BY SUBSTR(played_at, 1, 7)
+    GROUP BY SUBSTR(CONCAT(played_at, ''), 1, 7)
 ),
 with_prev AS (
     SELECT month, active_listeners,

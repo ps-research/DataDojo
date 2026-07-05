@@ -1,0 +1,20 @@
+{
+  "slug": "rideloop-fulfillment-sessions",
+  "universe": "rideloop",
+  "belt": "red",
+  "title": "True Request Fulfillment via Re-Request Sessionization",
+  "concepts": ["sessionization", "gaps-and-islands-time-threshold", "window-function", "lag", "running-sum-flag", "median", "boundary-handling", "grain-control", "zero-group-guard"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 120,
+  "prerequisites": ["rideloop-active-streak"],
+  "provenance": "rideloop:R1",
+  "landmines": [
+    {"name": "per-trip-denominator", "kills": "SUM(completed)/COUNT(*) per city measures a per-TRIP completion rate; one intent that needed three re-requests to succeed counts as 3 attempts / 1 success instead of 1 fulfilled session, so both num_sessions and the rate are wrong (Northgate 119/0.6639 vs 108/0.75 on the sample)."},
+    {"name": "date-split-sessions", "kills": "Sessionizing PARTITION BY rider, DATE(request_ts) splits any session that crosses midnight into two, inflating num_sessions; on the purple fixture 9 of 10 cities' counts diverge. Sessions must be per rider only."},
+    {"name": "trip-id-ordering", "kills": "Ordering the LAG/session scan by trip_id instead of request_ts sessionizes on a time-random key (worsened by back-dated follow-ups); every column diverges (sample 70/0.8143 vs 108/0.75; purple 194,141 vs 347,958 sessions)."},
+    {"name": "mean-not-median", "kills": "AVG(latency) instead of the median reports a right-skewed mean above the true median (Northgate 25.11 vs 23.22 on the sample); the spec asks for the exact median."},
+    {"name": "correlated-sessionization-tle", "kills": "Finding each request's predecessor with a correlated scalar subquery instead of LAG is O(N^2) and times out at 7M rows; it is correct on small inputs (matches the reference on the sample) so it fails by time only."}
+  ],
+  "notes": "Red, prerequisite-locked behind rideloop-active-streak. Sessionization = gaps-and-islands with a 5-minute (300 s, boundary exclusive) time threshold, ordered by (request_ts, trip_id); session-level fulfillment via MAX(completed); city from the session's first request; exact median over fulfilled sessions with a zero-group guard (LEFT JOIN so a city with no fulfilled session still reports, median NULL). reference.sql is SQLite (julianday deltas, order-statistic median). Per-engine: reference.postgres.sql (EXTRACT EPOCH, PERCENTILE_CONT), reference.duckdb.sql (DATE_DIFF, MEDIAN), reference.mysql.sql (TIMESTAMPDIFF, DIV order-statistic median). mssql: DATEDIFF(second,...) deltas, PERCENTILE_CONT(0.5) WITHIN GROUP ... OVER(PARTITION BY city) wrapped in a DISTINCT/subquery. Self-verified on SQLite: reference gives Northgate 108/0.75/23.22, Rivermouth 89/0.764/29.39; naives 1,3,4 diverge on the sample, naive 2 on the purple fixture, naive 5 matches the sample (TLE argued for the 7M fixture)."
+}

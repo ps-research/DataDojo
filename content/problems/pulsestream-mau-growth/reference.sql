@@ -1,13 +1,17 @@
 -- Monthly active listeners and month-over-month growth.
--- Bucket by the month of played_at (string slice of the ISO timestamp), count
--- DISTINCT listeners (so duplicate events and repeat listens do not inflate it),
--- then use LAG for the prior month with a NULL/zero guard on the first month.
+-- Bucket by the month of played_at, count DISTINCT listeners (so duplicate events
+-- and repeat listens do not inflate it), then use LAG for the prior month with a
+-- NULL/zero guard on the first month.
+--
+-- Portability: SUBSTR(CONCAT(played_at, ''), 1, 7) coerces the TIMESTAMP to its
+-- ISO text form on every engine and slices the 'YYYY-MM' month key, which sorts
+-- chronologically. This one form runs on sqlite, duckdb, postgres and mysql.
 WITH monthly AS (
     SELECT
-        SUBSTR(played_at, 1, 7)   AS month,
-        COUNT(DISTINCT user_id)   AS active_listeners
+        SUBSTR(CONCAT(played_at, ''), 1, 7) AS month,
+        COUNT(DISTINCT user_id)             AS active_listeners
     FROM plays
-    GROUP BY SUBSTR(played_at, 1, 7)
+    GROUP BY SUBSTR(CONCAT(played_at, ''), 1, 7)
 ),
 with_prev AS (
     SELECT
