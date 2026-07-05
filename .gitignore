@@ -24,3 +24,9 @@ __pycache__/
 # Scratch
 *.log
 .DS_Store
+
+# local-only, never commit
+VULTR_SSH_KEY.txt
+app/.mongodata/
+app/api/node_modules/
+.ipynb_checkpoints/
