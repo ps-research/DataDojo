@@ -1,0 +1,18 @@
+# Copyrighted source material — never commit (pipeline reads it from disk)
+Resources/
+
+# Dependencies & builds
+node_modules/
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Scratch
+*.log
+.DS_Store

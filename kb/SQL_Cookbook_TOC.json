@@ -1,0 +1,1178 @@
+[
+  {
+    "kind": "front",
+    "num": "Preface",
+    "title": "Preface",
+    "page": "xi"
+  },
+  {
+    "kind": "chapter",
+    "num": "1",
+    "title": "Retrieving Records",
+    "page": "1"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.1",
+    "title": "Retrieving All Rows and Columns from a Table",
+    "page": "1"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.2",
+    "title": "Retrieving a Subset of Rows from a Table",
+    "page": "2"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.3",
+    "title": "Finding Rows That Satisfy Multiple Conditions",
+    "page": "2"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.4",
+    "title": "Retrieving a Subset of Columns from a Table",
+    "page": "3"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.5",
+    "title": "Providing Meaningful Names for Columns",
+    "page": "4"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.6",
+    "title": "Referencing an Aliased Column in the WHERE Clause",
+    "page": "5"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.7",
+    "title": "Concatenating Column Values",
+    "page": "6"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.8",
+    "title": "Using Conditional Logic in a SELECT Statement",
+    "page": "7"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.9",
+    "title": "Limiting the Number of Rows Returned",
+    "page": "8"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.10",
+    "title": "Returning n Random Records from a Table",
+    "page": "10"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.11",
+    "title": "Finding Null Values",
+    "page": "11"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.12",
+    "title": "Transforming Nulls into Real Values",
+    "page": "12"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.13",
+    "title": "Searching for Patterns",
+    "page": "13"
+  },
+  {
+    "kind": "recipe",
+    "num": "1.14",
+    "title": "Summing Up",
+    "page": "14"
+  },
+  {
+    "kind": "chapter",
+    "num": "2",
+    "title": "Sorting Query Results",
+    "page": "15"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.1",
+    "title": "Returning Query Results in a Specified Order",
+    "page": "15"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.2",
+    "title": "Sorting by Multiple Fields",
+    "page": "16"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.3",
+    "title": "Sorting by Substrings",
+    "page": "17"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.4",
+    "title": "Sorting Mixed Alphanumeric Data",
+    "page": "18"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.5",
+    "title": "Dealing with Nulls When Sorting",
+    "page": "21"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.6",
+    "title": "Sorting on a Data-Dependent Key",
+    "page": "27"
+  },
+  {
+    "kind": "recipe",
+    "num": "2.7",
+    "title": "Summing Up",
+    "page": "28"
+  },
+  {
+    "kind": "chapter",
+    "num": "3",
+    "title": "Working with Multiple Tables",
+    "page": "29"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.1",
+    "title": "Stacking One Rowset atop Another",
+    "page": "29"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.2",
+    "title": "Combining Related Rows",
+    "page": "31"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.3",
+    "title": "Finding Rows in Common Between Two Tables",
+    "page": "33"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.4",
+    "title": "Retrieving Values from One Table That Do Not Exist in Another",
+    "page": "34"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.5",
+    "title": "Retrieving Rows from One Table That Do Not Correspond to Rows in Another",
+    "page": "40"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.6",
+    "title": "Adding Joins to a Query Without Interfering with Other Joins",
+    "page": "42"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.7",
+    "title": "Determining Whether Two Tables Have the Same Data",
+    "page": "44"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.8",
+    "title": "Identifying and Avoiding Cartesian Products",
+    "page": "51"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.9",
+    "title": "Performing Joins When Using Aggregates",
+    "page": "52"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.10",
+    "title": "Performing Outer Joins When Using Aggregates",
+    "page": "57"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.11",
+    "title": "Returning Missing Data from Multiple Tables",
+    "page": "60"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.12",
+    "title": "Using NULLs in Operations and Comparisons",
+    "page": "64"
+  },
+  {
+    "kind": "recipe",
+    "num": "3.13",
+    "title": "Summing Up",
+    "page": "65"
+  },
+  {
+    "kind": "chapter",
+    "num": "4",
+    "title": "Inserting, Updating, and Deleting",
+    "page": "67"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.1",
+    "title": "Inserting a New Record",
+    "page": "68"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.2",
+    "title": "Inserting Default Values",
+    "page": "68"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.3",
+    "title": "Overriding a Default Value with NULL",
+    "page": "70"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.4",
+    "title": "Copying Rows from One Table into Another",
+    "page": "70"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.5",
+    "title": "Copying a Table Definition",
+    "page": "71"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.6",
+    "title": "Inserting into Multiple Tables at Once",
+    "page": "72"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.7",
+    "title": "Blocking Inserts to Certain Columns",
+    "page": "74"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.8",
+    "title": "Modifying Records in a Table",
+    "page": "75"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.9",
+    "title": "Updating When Corresponding Rows Exist",
+    "page": "77"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.10",
+    "title": "Updating with Values from Another Table",
+    "page": "78"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.11",
+    "title": "Merging Records",
+    "page": "81"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.12",
+    "title": "Deleting All Records from a Table",
+    "page": "83"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.13",
+    "title": "Deleting Specific Records",
+    "page": "83"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.14",
+    "title": "Deleting a Single Record",
+    "page": "84"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.15",
+    "title": "Deleting Referential Integrity Violations",
+    "page": "85"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.16",
+    "title": "Deleting Duplicate Records",
+    "page": "85"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.17",
+    "title": "Deleting Records Referenced from Another Table",
+    "page": "87"
+  },
+  {
+    "kind": "recipe",
+    "num": "4.18",
+    "title": "Summing Up",
+    "page": "89"
+  },
+  {
+    "kind": "chapter",
+    "num": "5",
+    "title": "Metadata Queries",
+    "page": "91"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.1",
+    "title": "Listing Tables in a Schema",
+    "page": "91"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.2",
+    "title": "Listing a Table’s Columns",
+    "page": "93"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.3",
+    "title": "Listing Indexed Columns for a Table",
+    "page": "94"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.4",
+    "title": "Listing Constraints on a Table",
+    "page": "95"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.5",
+    "title": "Listing Foreign Keys Without Corresponding Indexes",
+    "page": "97"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.6",
+    "title": "Using SQL to Generate SQL",
+    "page": "100"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.7",
+    "title": "Describing the Data Dictionary Views in an Oracle Database",
+    "page": "102"
+  },
+  {
+    "kind": "recipe",
+    "num": "5.8",
+    "title": "Summing Up",
+    "page": "103"
+  },
+  {
+    "kind": "chapter",
+    "num": "6",
+    "title": "Working with Strings",
+    "page": "105"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.1",
+    "title": "Walking a String",
+    "page": "106"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.2",
+    "title": "Embedding Quotes Within String Literals",
+    "page": "108"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.3",
+    "title": "Counting the Occurrences of a Character in a String",
+    "page": "109"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.4",
+    "title": "Removing Unwanted Characters from a String",
+    "page": "110"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.5",
+    "title": "Separating Numeric and Character Data",
+    "page": "112"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.6",
+    "title": "Determining Whether a String Is Alphanumeric",
+    "page": "116"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.7",
+    "title": "Extracting Initials from a Name",
+    "page": "120"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.8",
+    "title": "Ordering by Parts of a String",
+    "page": "125"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.9",
+    "title": "Ordering by a Number in a String",
+    "page": "126"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.10",
+    "title": "Creating a Delimited List from Table Rows",
+    "page": "132"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.11",
+    "title": "Converting Delimited Data into a Multivalued IN-List",
+    "page": "136"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.12",
+    "title": "Alphabetizing a String",
+    "page": "141"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.13",
+    "title": "Identifying Strings That Can Be Treated as Numbers",
+    "page": "147"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.14",
+    "title": "Extracting the nth Delimited Substring",
+    "page": "153"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.15",
+    "title": "Parsing an IP Address",
+    "page": "160"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.16",
+    "title": "Comparing Strings by Sound",
+    "page": "162"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.17",
+    "title": "Finding Text Not Matching a Pattern",
+    "page": "164"
+  },
+  {
+    "kind": "recipe",
+    "num": "6.18",
+    "title": "Summing Up",
+    "page": "167"
+  },
+  {
+    "kind": "chapter",
+    "num": "7",
+    "title": "Working with Numbers",
+    "page": "169"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.1",
+    "title": "Computing an Average",
+    "page": "169"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.2",
+    "title": "Finding the Min/Max Value in a Column",
+    "page": "171"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.3",
+    "title": "Summing the Values in a Column",
+    "page": "173"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.4",
+    "title": "Counting Rows in a Table",
+    "page": "175"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.5",
+    "title": "Counting Values in a Column",
+    "page": "177"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.6",
+    "title": "Generating a Running Total",
+    "page": "178"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.7",
+    "title": "Generating a Running Product",
+    "page": "179"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.8",
+    "title": "Smoothing a Series of Values",
+    "page": "181"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.9",
+    "title": "Calculating a Mode",
+    "page": "182"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.10",
+    "title": "Calculating a Median",
+    "page": "185"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.11",
+    "title": "Determining the Percentage of a Total",
+    "page": "187"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.12",
+    "title": "Aggregating Nullable Columns",
+    "page": "190"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.13",
+    "title": "Computing Averages Without High and Low Values",
+    "page": "191"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.14",
+    "title": "Converting Alphanumeric Strings into Numbers",
+    "page": "193"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.15",
+    "title": "Changing Values in a Running Total",
+    "page": "196"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.16",
+    "title": "Finding Outliers Using the Median Absolute Deviation",
+    "page": "197"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.17",
+    "title": "Finding Anomalies Using Benford’s Law",
+    "page": "201"
+  },
+  {
+    "kind": "recipe",
+    "num": "7.18",
+    "title": "Summing Up",
+    "page": "203"
+  },
+  {
+    "kind": "chapter",
+    "num": "8",
+    "title": "Date Arithmetic",
+    "page": "205"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.1",
+    "title": "Adding and Subtracting Days, Months, and Years",
+    "page": "205"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.2",
+    "title": "Determining the Number of Days Between Two Dates",
+    "page": "208"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.3",
+    "title": "Determining the Number of Business Days Between Two Dates",
+    "page": "210"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.4",
+    "title": "Determining the Number of Months or Years Between Two Dates",
+    "page": "215"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.5",
+    "title": "Determining the Number of Seconds, Minutes, or Hours Between Two Dates",
+    "page": "218"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.6",
+    "title": "Counting the Occurrences of Weekdays in a Year",
+    "page": "220"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.7",
+    "title": "Determining the Date Difference Between the Current Record and the Next Record",
+    "page": "231"
+  },
+  {
+    "kind": "recipe",
+    "num": "8.8",
+    "title": "Summing Up",
+    "page": "237"
+  },
+  {
+    "kind": "chapter",
+    "num": "9",
+    "title": "Date Manipulation",
+    "page": "239"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.1",
+    "title": "Determining Whether a Year Is a Leap Year",
+    "page": "240"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.2",
+    "title": "Determining the Number of Days in a Year",
+    "page": "246"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.3",
+    "title": "Extracting Units of Time from a Date",
+    "page": "249"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.4",
+    "title": "Determining the First and Last Days of a Month",
+    "page": "252"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.5",
+    "title": "Determining All Dates for a Particular Weekday Throughout a Year",
+    "page": "255"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.6",
+    "title": "Determining the Date of the First and Last Occurrences of a Specific Weekday in a Month",
+    "page": "261"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.7",
+    "title": "Creating a Calendar",
+    "page": "268"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.8",
+    "title": "Listing Quarter Start and End Dates for the Year",
+    "page": "281"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.9",
+    "title": "Determining Quarter Start and End Dates for a Given Quarter",
+    "page": "286"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.10",
+    "title": "Filling in Missing Dates",
+    "page": "293"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.11",
+    "title": "Searching on Specific Units of Time",
+    "page": "301"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.12",
+    "title": "Comparing Records Using Specific Parts of a Date",
+    "page": "302"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.13",
+    "title": "Identifying Overlapping Date Ranges",
+    "page": "305"
+  },
+  {
+    "kind": "recipe",
+    "num": "9.14",
+    "title": "Summing Up",
+    "page": "311"
+  },
+  {
+    "kind": "chapter",
+    "num": "10",
+    "title": "Working with Ranges",
+    "page": "313"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.1",
+    "title": "Locating a Range of Consecutive Values",
+    "page": "313"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.2",
+    "title": "Finding Differences Between Rows in the Same Group or Partition",
+    "page": "317"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.3",
+    "title": "Locating the Beginning and End of a Range of Consecutive Values",
+    "page": "323"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.4",
+    "title": "Filling in Missing Values in a Range of Values",
+    "page": "326"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.5",
+    "title": "Generating Consecutive Numeric Values",
+    "page": "330"
+  },
+  {
+    "kind": "recipe",
+    "num": "10.6",
+    "title": "Summing Up",
+    "page": "333"
+  },
+  {
+    "kind": "chapter",
+    "num": "11",
+    "title": "Advanced Searching",
+    "page": "335"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.1",
+    "title": "Paginating Through a Result Set",
+    "page": "335"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.2",
+    "title": "Skipping n Rows from a Table",
+    "page": "338"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.3",
+    "title": "Incorporating OR Logic When Using Outer Joins",
+    "page": "339"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.4",
+    "title": "Determining Which Rows Are Reciprocals",
+    "page": "341"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.5",
+    "title": "Selecting the Top n Records",
+    "page": "343"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.6",
+    "title": "Finding Records with the Highest and Lowest Values",
+    "page": "344"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.7",
+    "title": "Investigating Future Rows",
+    "page": "345"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.8",
+    "title": "Shifting Row Values",
+    "page": "347"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.9",
+    "title": "Ranking Results",
+    "page": "350"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.10",
+    "title": "Suppressing Duplicates",
+    "page": "351"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.11",
+    "title": "Finding Knight Values",
+    "page": "353"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.12",
+    "title": "Generating Simple Forecasts",
+    "page": "359"
+  },
+  {
+    "kind": "recipe",
+    "num": "11.13",
+    "title": "Summing Up",
+    "page": "367"
+  },
+  {
+    "kind": "chapter",
+    "num": "12",
+    "title": "Reporting and Reshaping",
+    "page": "369"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.1",
+    "title": "Pivoting a Result Set into One Row",
+    "page": "369"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.2",
+    "title": "Pivoting a Result Set into Multiple Rows",
+    "page": "372"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.3",
+    "title": "Reverse Pivoting a Result Set",
+    "page": "377"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.4",
+    "title": "Reverse Pivoting a Result Set into One Column",
+    "page": "379"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.5",
+    "title": "Suppressing Repeating Values from a Result Set",
+    "page": "382"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.6",
+    "title": "Pivoting a Result Set to Facilitate Inter-Row Calculations",
+    "page": "384"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.7",
+    "title": "Creating Buckets of Data, of a Fixed Size",
+    "page": "386"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.8",
+    "title": "Creating a Predefined Number of Buckets",
+    "page": "388"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.9",
+    "title": "Creating Horizontal Histograms",
+    "page": "390"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.10",
+    "title": "Creating Vertical Histograms",
+    "page": "392"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.11",
+    "title": "Returning Non-GROUP BY Columns",
+    "page": "394"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.12",
+    "title": "Calculating Simple Subtotals",
+    "page": "397"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.13",
+    "title": "Calculating Subtotals for All Possible Expression Combinations",
+    "page": "400"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.14",
+    "title": "Identifying Rows That Are Not Subtotals",
+    "page": "410"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.15",
+    "title": "Using Case Expressions to Flag Rows",
+    "page": "412"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.16",
+    "title": "Creating a Sparse Matrix",
+    "page": "414"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.17",
+    "title": "Grouping Rows by Units of Time",
+    "page": "416"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.18",
+    "title": "Performing Aggregations over Different Groups/Partitions Simultaneously",
+    "page": "420"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.19",
+    "title": "Performing Aggregations over a Moving Range of Values",
+    "page": "422"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.20",
+    "title": "Pivoting a Result Set with Subtotals",
+    "page": "429"
+  },
+  {
+    "kind": "recipe",
+    "num": "12.21",
+    "title": "Summing Up",
+    "page": "434"
+  },
+  {
+    "kind": "chapter",
+    "num": "13",
+    "title": "Hierarchical Queries",
+    "page": "435"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.1",
+    "title": "Expressing a Parent-Child Relationship",
+    "page": "436"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.2",
+    "title": "Expressing a Child-Parent-Grandparent Relationship",
+    "page": "440"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.3",
+    "title": "Creating a Hierarchical View of a Table",
+    "page": "444"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.4",
+    "title": "Finding All Child Rows for a Given Parent Row",
+    "page": "449"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.5",
+    "title": "Determining Which Rows Are Leaf, Branch, or Root Nodes",
+    "page": "450"
+  },
+  {
+    "kind": "recipe",
+    "num": "13.6",
+    "title": "Summing Up",
+    "page": "458"
+  },
+  {
+    "kind": "chapter",
+    "num": "14",
+    "title": "Odds ’n’ Ends",
+    "page": "459"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.1",
+    "title": "Creating Cross-Tab Reports Using SQL Server’s PIVOT Operator",
+    "page": "459"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.2",
+    "title": "Unpivoting a Cross-Tab Report Using SQL Server’s UNPIVOT Operator",
+    "page": "461"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.3",
+    "title": "Transposing a Result Set Using Oracle’s MODEL Clause",
+    "page": "463"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.4",
+    "title": "Extracting Elements of a String from Unfixed Locations",
+    "page": "467"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.5",
+    "title": "Finding the Number of Days in a Year (an Alternate Solution for Oracle)",
+    "page": "470"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.6",
+    "title": "Searching for Mixed Alphanumeric Strings",
+    "page": "472"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.7",
+    "title": "Converting Whole Numbers to Binary Using Oracle",
+    "page": "474"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.8",
+    "title": "Pivoting a Ranked Result Set",
+    "page": "477"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.9",
+    "title": "Adding a Column Header into a Double Pivoted Result Set",
+    "page": "481"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.10",
+    "title": "Converting a Scalar Subquery to a Composite Subquery in Oracle",
+    "page": "493"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.11",
+    "title": "Parsing Serialized Data into Rows",
+    "page": "495"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.12",
+    "title": "Calculating Percent Relative to Total",
+    "page": "500"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.13",
+    "title": "Testing for Existence of a Value Within a Group",
+    "page": "502"
+  },
+  {
+    "kind": "recipe",
+    "num": "14.14",
+    "title": "Summing Up",
+    "page": "505"
+  },
+  {
+    "kind": "appendix",
+    "num": "A",
+    "title": "Window Function Refresher",
+    "page": "507"
+  },
+  {
+    "kind": "appendix",
+    "num": "B",
+    "title": "Common Table Expressions",
+    "page": "535"
+  },
+  {
+    "kind": "front",
+    "num": "Index",
+    "title": "Index",
+    "page": "539"
+  }
+]
