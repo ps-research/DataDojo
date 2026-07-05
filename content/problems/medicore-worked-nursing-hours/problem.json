@@ -1,0 +1,17 @@
+{
+  "slug": "medicore-worked-nursing-hours",
+  "universe": "medicore",
+  "belt": "purple",
+  "title": "Worked Nursing Hours by Ward and Month",
+  "concepts": ["month-bucketing", "start-date-attribution", "status-filter", "coalesce", "distinct-dedup", "sum", "group-by", "night-shift-boundary"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["medicore-admissions-by-department"],
+  "provenance": "medicore:P3",
+  "landmines": [
+    {"name": "night-shift-month-boundary", "kills": "naive/1_group_by_scheduled_end_month.sql -- attributing a shift to the month of scheduled_end lands a NIGHT shift that starts 29 Feb and ends 1 Mar in March instead of February"},
+    {"name": "double-booked-duplicate", "kills": "naive/2_no_dedup_double_counts.sql -- SUM over raw rows counts a double-booked (duplicated) shift twice, over-stating the ward's hours"}
+  ],
+  "notes": "Attribute each shift to the month of shift_date (the calendar date it starts on), not scheduled_end (a NIGHT shift ends the next day and can cross a month/leap boundary). Metric = SUM(COALESCE(actual_hours,0)) over each ward's nurse shifts in the month, excluding only status = 'CANCELLED'. A no-show has NULL actual_hours -> counts as 0 but must keep its ward-month present. Double-booked rows (identical business tuple, new shift_id) are collapsed with DISTINCT so they count once. reference.sql is the SQLite form (substr for the 'YYYY-MM' key); reference.postgres.sql / reference.mysql.sql / reference.duckdb.sql give the per-engine month key. mssql omitted (needs FORMAT/CONVERT for the month key; not verified in the authoring sandbox)."
+}

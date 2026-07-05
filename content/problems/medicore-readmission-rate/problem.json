@@ -1,0 +1,19 @@
+{
+  "slug": "medicore-readmission-rate",
+  "universe": "medicore",
+  "belt": "black",
+  "title": "Thirty-Day Emergency Readmission Rate by Department",
+  "concepts": ["window-function", "lead", "per-partition-sequencing", "temporal-interval", "inclusive-boundary", "multi-predicate-eligibility", "nullif-guard", "left-join-spine", "null-handling"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["medicore-avg-length-of-stay"],
+  "provenance": "medicore:BK1",
+  "landmines": [
+    {"name": "exact-30-day-inclusive", "kills": "naive/1_exclusive_window.sql -- a strict < 30 days window misses a readmission that lands exactly 30 days after discharge (inclusive boundary)"},
+    {"name": "planned-return-counted", "kills": "naive/2_any_admit_type.sql -- counting the next admission regardless of admit_type treats a planned ELECTIVE or internal TRANSFER return as a readmission, over-counting"},
+    {"name": "zero-eligible-department-dropped", "kills": "naive/3_drop_zero_denominator.sql -- aggregating only over the eligible index set drops a department with zero eligible index stays (all-EXPIRED Palliative Care) instead of reporting NULL, and without NULLIF risks a divide-by-zero"},
+    {"name": "unbounded-selfjoin-anylater", "kills": "naive/4_unbounded_selfjoin_slow.sql -- pairing an index with ANY later admission within 30 days (not the immediate next) over-counts bounce-backs, and the O(n^2) self-join is the designated TLE-slow solution"}
+  ],
+  "notes": "An eligible index stay is completed (discharge_ts IS NOT NULL) and not a death or transfer-out (discharge_disposition NOT IN ('EXPIRED','TRANSFER')). A readmission is the patient's IMMEDIATE next admission (by admit_ts, admission_id) that is EMERGENCY and whose admit_ts is within 30 days INCLUSIVE of the index discharge. Rate = readmitted / eligible per index-stay department, NULLIF-guarded; a department with zero eligible index stays reports NULL and must still appear (LEFT JOIN from the department list). Rows are not time-sorted and admission_id is not chronological across patients, so sequencing must be by admit_ts via LEAD. reference.sql is the SQLite form (datetime(...,'+30 days')); reference.postgres.sql / reference.mysql.sql / reference.duckdb.sql give the per-engine 30-day interval. mssql omitted (DATEADD/DATEDIFF form, not verified in the authoring sandbox). TLE: at black scale (~1.3M admissions) the naive/4 unbounded self-join blows the limit while the LEAD window finishes well under it."
+}

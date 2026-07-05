@@ -1,0 +1,18 @@
+{
+  "slug": "carthive-return-rate-by-category",
+  "universe": "carthive",
+  "belt": "purple",
+  "title": "Return Rate by Category",
+  "concepts": ["left-join", "separate-grain-aggregation", "fan-out-avoidance", "safe-division", "integer-division-trap", "coalesce", "nullif", "group-by", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["carthive-gmv-by-category"],
+  "provenance": "carthive:P1",
+  "landmines": [
+    {"name": "returns-fan-out", "kills": "Joining order_items to returns and summing quantity multiplies the sold quantity by the number of return rows on a line (partial returns), corrupting the denominator. Kills naive/1_fanout_intdiv_innerjoin.sql."},
+    {"name": "integer-division", "kills": "SUM(quantity_returned) / SUM(quantity) is INTEGER/INTEGER and truncates every real rate below 1 to 0. Kills naive/1_fanout_intdiv_innerjoin.sql on integer-division engines (sqlite, postgres, duckdb)."},
+    {"name": "empty-group-dropped", "kills": "An INNER JOIN to returns deletes categories that sold something but were never returned; they must appear with return_rate 0. Kills naive/1_fanout_intdiv_innerjoin.sql and naive/2_innerjoin_drops_zero_return.sql."}
+  ],
+  "notes": "Sold and returned units are aggregated on separate grains and combined with a LEFT JOIN, so partial-return fan-out never touches the denominator. Real division via 1.0* is portable and avoids MySQL/SQLite divergence on integer division. MSSQL: 1.0* division and ROUND behave the same."
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "rideloop-acceptance-rate",
+  "universe": "rideloop",
+  "belt": "purple",
+  "title": "Driver Acceptance Rate by Pickup Zone",
+  "concepts": ["conditional-aggregation", "ratio", "having-threshold", "safe-division", "null-semantics", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "rideloop:P1",
+  "landmines": [
+    {"name": "driver-id-as-completion-proxy", "kills": "COUNT(driver_id) (or any 'a driver was assigned' proxy) measures the match rate, not the completion rate: driver_id is NULL for no_driver and for riders who cancel before matching, yet non-NULL for matched-then-cancelled_driver rows. Only status='completed' defines acceptance, so the proxy diverges in both value and worst-to-best order."},
+    {"name": "integer-division-truncation", "kills": "completed / total with two integer operands truncates to 0 on every engine; the ratio must be forced to real (1.0 * numerator or CAST) before dividing."},
+    {"name": "thin-zone-threshold", "kills": "Without HAVING COUNT(*) >= 20, thin pickup zones with a handful of requests produce extreme, noise-dominated rates that outrank real zones at the worst-first end of the list."}
+  ],
+  "notes": "Purple: conditional aggregation + safe ratio + threshold. The acceptance_rate denominator is total requests per zone (guaranteed >= 20 by HAVING), so there is no divide-by-zero in the reference; the divide-by-zero risk lives in the naive proxies. Fully portable (SUM(CASE), COUNT, ROUND, 1.0* division)."
+}

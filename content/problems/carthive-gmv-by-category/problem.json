@@ -1,0 +1,14 @@
+{
+  "slug": "carthive-gmv-by-category",
+  "universe": "carthive",
+  "belt": "blue",
+  "title": "Which Categories Move the Most Merchandise",
+  "concepts": ["inner-join", "multi-table-join", "sum", "group-by", "order-by", "limit", "top-n"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "carthive:B1",
+  "landmines": [],
+  "notes": "Blue warm-up: a clean three-table join with no traps. GMV counts every billed line, so duplicate lines are legitimately included; departments never appear because products live only on leaf categories."
+}

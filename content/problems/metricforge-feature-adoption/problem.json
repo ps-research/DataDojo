@@ -1,0 +1,16 @@
+{
+  "slug": "metricforge-feature-adoption",
+  "universe": "metricforge",
+  "belt": "blue",
+  "title": "Feature Adoption Leaderboard",
+  "concepts": ["inner-join", "group-by", "count-distinct", "date-range-filter", "tie-break-ordering"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "metricforge:B1",
+  "landmines": [
+    {"name": "count-star-inflation", "kills": "naive/1_countstar.sql -- COUNT(*) (or COUNT(user_id)) counts repeat usage by the same person plus double-fired duplicate events, so it both inflates the numbers and reorders the leaderboard; the metric is COUNT(DISTINCT user_id)."}
+  ],
+  "notes": "Adoption is measured per feature over one calendar month (2024-02) using a half-open range on event_ts ('2024-02-01' <= event_ts < '2024-03-01') so it is portable across engines (string/timestamp comparison, no per-engine date function). events.flag_id is NULL on every non-feature_used row, so the event_type='feature_used' filter plus the INNER JOIN on flag_id both keep those rows out. flag_key is unique and never NULL, so the DESC-adopters / ASC-key ordering is deterministic across engines. Anti-hardcode: the hidden fixture is a different seed at blue scale, so the sample month's numbers do not transfer."
+}

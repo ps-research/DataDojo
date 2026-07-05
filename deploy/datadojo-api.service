@@ -1,0 +1,16 @@
+[Unit]
+Description=DataDojo API and judge worker
+After=network.target mongod.service redis-server.service postgresql.service mariadb.service
+
+[Service]
+Type=simple
+WorkingDirectory=/root/DataDojo/app/api
+EnvironmentFile=/root/DataDojo/app/api/.env
+ExecStart=/usr/bin/node dist/server.js
+Restart=always
+RestartSec=3
+StandardOutput=append:/var/log/datadojo-api.log
+StandardError=append:/var/log/datadojo-api.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+{
+  "slug": "medicore-admissions-by-department",
+  "universe": "medicore",
+  "belt": "blue",
+  "title": "Admissions by Department, Month of Record",
+  "concepts": ["inner-join", "date-range-filter", "half-open-interval", "group-by", "count-star", "order-by", "tie-break"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "medicore:B1",
+  "landmines": [],
+  "notes": "Blue scenario: one clean join and a half-open date-range filter on admit_ts. Counting admissions is robust to open stays, NULLs, and the capacity-0 ward, so no landmine gate applies. The only discipline required is filtering on admit_ts (not the non-chronological admission_id) with a half-open range >= '2024-02-01' AND < '2024-03-01'. A BETWEEN '2024-02-01' AND '2024-02-29' on the TIMESTAMP column silently drops admissions timestamped after midnight on 29 Feb -- the gentle teaching point, not a graded trap. Anti-hardcode (G2) holds: the hidden fixture uses a different seed and scale, so the per-department counts differ from the visible sample."
+}

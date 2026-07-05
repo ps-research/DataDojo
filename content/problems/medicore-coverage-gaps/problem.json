@@ -1,0 +1,19 @@
+{
+  "slug": "medicore-coverage-gaps",
+  "universe": "medicore",
+  "belt": "black",
+  "title": "Nurse Coverage Gaps in the Reporting Month",
+  "concepts": ["calendar-spine", "recursive-cte", "cross-join", "left-join-anti-join", "empty-group", "count-distinct", "status-filter", "leap-february"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["medicore-worked-nursing-hours"],
+  "provenance": "medicore:BK2",
+  "landmines": [
+    {"name": "empty-slot-invisible-to-roster", "kills": "naive/1_roster_only_group_by.sql -- computed from roster_shifts alone with GROUP BY ... HAVING COUNT < min, it can never emit a slot that has zero (or zero WORKED) rows, so every fully-uncovered slot is missed"},
+    {"name": "count-star-ignores-status-and-dupes", "kills": "naive/2_count_star_any_status.sql -- COUNT(*) with no status filter and no DISTINCT counts no-shows, cancellations and double-booked duplicates as coverage, hiding real gaps"},
+    {"name": "short-february-spine", "kills": "naive/3_short_february_spine.sql -- a 28-day February spine (stopping at 2024-02-28) drops every 29-February slot, including the guaranteed uncovered leap-day gaps"},
+    {"name": "per-slot-correlated-subquery-slow", "kills": "naive/4_correlated_per_slot_slow.sql -- correct result but a correlated COUNT(DISTINCT) subquery per spine slot is O(slots x roster) and is the designated TLE-slow solution (TLE-only: identical output to the reference on the sample)"}
+  ],
+  "notes": "A slot is (ward, date, shift_type) over wards with min_nurses_per_shift > 0 (the min=0 decommissioned ward is never in breach) CROSS JOINed with all 29 days of February 2024 and the three shift types. Coverage = COUNT(DISTINCT staff_id) of role='NURSE' AND status='WORKED' rows LEFT JOINed onto the spine; a slot is a breach when coverage < min_nurses_per_shift, shortfall = min - coverage. The central kill is that a fully-uncovered slot (no rows, or all no-show/cancelled) has zero roster rows and is invisible to any roster-only aggregation -- it must be surfaced by the spine + LEFT JOIN. reference.sql builds the spine with a SQLite recursive date CTE; reference.postgres.sql / reference.mysql.sql / reference.duckdb.sql use the INTERVAL form. mssql omitted (recursive CTE needs OPTION(MAXRECURSION) and DATEADD; not verified in the authoring sandbox). TLE: at black scale (~1.1M roster rows) the per-slot correlated subquery (naive/4) times out while the single grouped LEFT JOIN finishes well under the limit."
+}

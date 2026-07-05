@@ -1,0 +1,17 @@
+{
+  "slug": "rideloop-surge-profile",
+  "universe": "rideloop",
+  "belt": "purple",
+  "title": "Hourly Demand and Surge Profile by City",
+  "concepts": ["group-by", "hour-bucket", "average", "null-vs-zero", "conditional-aggregation", "ratio", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "rideloop:P3",
+  "landmines": [
+    {"name": "null-surge-in-denominator", "kills": "avg_surge as SUM(surge_multiplier)/COUNT(*) divides the known-surge total by ALL requests; non-completed rows with a NULL surge inflate the denominator and understate the average. AVG(surge_multiplier), which ignores NULLs, is correct. (Bites on the hidden purple fixture, where null surges exist.)"},
+    {"name": "demand-is-not-completed", "kills": "Filtering to status='completed' before counting undercounts total_requests: demand is every request row, including no_driver and cancellations."}
+  ],
+  "notes": "Purple: hour bucketing + an average over a nullable measure + NULL-vs-zero discipline. Hour is CAST(SUBSTR(request_ts,12,2) AS INTEGER) (chars 12-13 of the ISO timestamp), portable across SQLite/DuckDB/Postgres/MySQL. mssql: use SUBSTRING(request_ts,12,2). Single reference.sql (SQLite-verified); no per-engine variant needed since it uses no date arithmetic."
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "carthive-conversion-by-channel",
+  "universe": "carthive",
+  "belt": "purple",
+  "title": "Cart-to-Purchase Conversion by Acquisition Channel",
+  "concepts": ["count-distinct", "session-grain-dedup", "conditional-aggregation", "left-join", "coalesce-null-bucket", "safe-division", "nullif", "group-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["carthive-orders-by-month"],
+  "provenance": "carthive:P2",
+  "landmines": [
+    {"name": "duplicate-events-inflate", "kills": "Counting event rows per stage (rather than distinct sessions) lets a double-fired add_to_cart count twice, inflating the denominator and understating conversion. Kills naive/1_count_rows_double_fire.sql."},
+    {"name": "anonymous-dropped", "kills": "An INNER JOIN of events to customers discards sessions with NULL customer_id (anonymous), stripping the unknown bucket of anonymous traffic. Kills naive/2_innerjoin_drops_anonymous.sql."},
+    {"name": "null-channel-bucket", "kills": "NULL acquisition_channel (and anonymous sessions) must collapse into a single labelled 'unknown' group via COALESCE, not be filtered out or split; a WHERE channel NOT IN (...) or GROUP BY on the raw NULL mishandles them."}
+  ],
+  "notes": "Stage membership is computed per session (MAX(CASE ...)) so duplicate events collapse before counting. Anonymous (NULL customer) and NULL-channel customers both map to 'unknown' via COALESCE and a LEFT JOIN. 1.0* division is portable across engines."
+}

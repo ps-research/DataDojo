@@ -1,0 +1,14 @@
+{
+  "slug": "rideloop-busiest-zones",
+  "universe": "rideloop",
+  "belt": "blue",
+  "title": "Busiest Pickup Zones in a City",
+  "concepts": ["inner-join", "filter", "group-by", "count", "order-by", "limit", "top-n"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "rideloop:B1",
+  "landmines": [],
+  "notes": "Blue warm-up: a clean two-table join. The one discipline is that 'busiest' counts status='completed' rides, not every request row (no_driver and cancelled requests produce no ride). City is a geozones attribute, so the filter rides on the joined dimension. Tie on the count is broken by zone_name so the top-10 cut is deterministic. mssql: replace LIMIT 10 with SELECT TOP 10 (or OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY)."
+}

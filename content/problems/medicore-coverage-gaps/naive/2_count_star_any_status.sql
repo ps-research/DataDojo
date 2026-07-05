@@ -1,0 +1,34 @@
+-- NAIVE (WA): builds the spine correctly (so empty slots are considered) but measures
+-- coverage with COUNT(*) over all nurse rows regardless of status and without DISTINCT.
+-- That counts no-shows, cancellations, swaps and double-booked duplicates as if they
+-- were coverage, so slots that are actually short look staffed. A slot whose only rows
+-- are no-shows reports coverage >= 1 instead of 0, a double-booked nurse counts twice.
+-- Real breaches are hidden and reported shortfalls are wrong. The fix is COUNT(DISTINCT
+-- staff_id) filtered to status = 'WORKED', as in the reference.
+WITH RECURSIVE cal(d) AS (
+    SELECT '2024-02-01' UNION ALL SELECT date(d, '+1 day') FROM cal WHERE d < '2024-02-29'
+),
+shift_types(shift_type) AS ( SELECT 'DAY' UNION ALL SELECT 'NIGHT' UNION ALL SELECT 'SWING' ),
+spine AS (
+    SELECT w.ward_id, w.min_nurses_per_shift, c.d AS shift_date, st.shift_type
+    FROM wards w CROSS JOIN cal c CROSS JOIN shift_types st
+    WHERE w.min_nurses_per_shift > 0
+),
+worked AS (
+    SELECT r.ward_id, r.shift_date, r.shift_type, COUNT(*) AS nurses
+    FROM roster_shifts r
+    JOIN staff s ON s.staff_id = r.staff_id
+    WHERE s.role = 'NURSE'
+      AND r.shift_date >= '2024-02-01' AND r.shift_date <= '2024-02-29'
+    GROUP BY r.ward_id, r.shift_date, r.shift_type
+)
+SELECT
+    sp.ward_id, sp.shift_date, sp.shift_type,
+    sp.min_nurses_per_shift              AS required_nurses,
+    COALESCE(wk.nurses, 0)               AS nurses_worked,
+    sp.min_nurses_per_shift - COALESCE(wk.nurses, 0) AS shortfall
+FROM spine sp
+LEFT JOIN worked wk
+       ON wk.ward_id = sp.ward_id AND wk.shift_date = sp.shift_date AND wk.shift_type = sp.shift_type
+WHERE COALESCE(wk.nurses, 0) < sp.min_nurses_per_shift
+ORDER BY sp.ward_id ASC, sp.shift_date ASC, sp.shift_type ASC;

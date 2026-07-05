@@ -1,0 +1,17 @@
+{
+  "slug": "medicore-avg-length-of-stay",
+  "universe": "medicore",
+  "belt": "purple",
+  "title": "Average Length of Stay by Department",
+  "concepts": ["timestamp-difference", "whole-day-floor", "null-filter", "avg", "group-by", "order-by", "leap-boundary"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["medicore-admissions-by-department"],
+  "provenance": "medicore:P1",
+  "landmines": [
+    {"name": "null-discharge-open-stay", "kills": "naive/1_open_stays_as_zero.sql -- COALESCE(discharge_ts, admit_ts) turns still-open (in-house) stays into 0-day stays and includes them, inflating the denominator and dragging the average down"},
+    {"name": "calendar-date-vs-elapsed", "kills": "naive/2_calendar_date_diff.sql -- differencing the DATE parts counts calendar-day boundaries, so a 4-hour stay that crosses midnight scores 1 day instead of 0"}
+  ],
+  "notes": "Length of stay is whole elapsed days = floor((discharge_ts - admit_ts) / 1 day). A same-day stay (< 24h) is a genuine 0-day stay and is included; a still-open stay (discharge_ts IS NULL) has no LOS yet and is excluded, not counted as zero. reference.sql is the SQLite form (julianday); reference.postgres.sql / reference.mysql.sql / reference.duckdb.sql give the per-engine elapsed-day form. mssql is omitted: its DATEDIFF(DAY,..) counts calendar boundaries (would need DATEDIFF(SECOND,..)/86400 plus a float-cast AVG) and was not verifiable in the authoring sandbox."
+}

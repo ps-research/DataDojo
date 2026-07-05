@@ -1,0 +1,17 @@
+{
+  "slug": "pulsestream-skip-rate",
+  "universe": "pulsestream",
+  "belt": "purple",
+  "title": "Track Skip-Rate Leaderboard",
+  "concepts": ["conditional-aggregation", "ratio", "having-threshold", "null-exclusion", "unit-awareness", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["pulsestream-genre-minutes"],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "divide-by-zero-never-played", "kills": "LEFT JOIN from all tracks includes never-played tracks with 0 plays; skips/plays divides by zero (runtime error on Postgres, NULL rows on SQLite/MySQL). The >=50 threshold must gate the ratio."},
+    {"name": "null-ms-in-denominator", "kills": "Using COUNT(*) as the denominator counts NULL-ms plays as non-skips, inflating the denominator and understating the skip rate; NULL ms_played must be excluded from both numerator and denominator."},
+    {"name": "skip-threshold-wrong-unit", "kills": "A skip is ms_played < 30000 (30 seconds in milliseconds). Writing ms_played < 30 (seconds) or ms_played < duration_sec (seconds) mixes units and finds almost no skips."}
+  ]
+}

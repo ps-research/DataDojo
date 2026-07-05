@@ -1,0 +1,20 @@
+{
+  "slug": "carthive-cohort-retention",
+  "universe": "carthive",
+  "belt": "black",
+  "title": "Cohort Retention Grid",
+  "concepts": ["cohort-analysis", "month-offset-arithmetic", "date-boundary", "count-distinct", "empty-denominator", "safe-division", "nullif", "inner-join-guest-exclusion", "group-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["carthive-return-rate-by-category", "carthive-top-products-per-category"],
+  "provenance": "carthive:Bk2",
+  "landmines": [
+    {"name": "month-offset-arithmetic", "kills": "Deriving the offset from the month number alone (ignoring the year) or from days/30 mislabels offsets across month ends, the leap day, and the year boundary -- e.g. Jan 2023 against a Jan 2022 signup collapses to offset 0 and the cross-year run is lost. Offset must be (year*12+month) on both dates. Kills naive/1_month_only_offset.sql."},
+    {"name": "dormant-denominator", "kills": "Cohort size counts every signup, including dormant customers who never order. Building the denominator from ordering customers only overstates every retention rate. Kills naive/2_dormant_excluded_denominator.sql."},
+    {"name": "distinct-customer-numerator", "kills": "The numerator is COUNT(DISTINCT customer_id); COUNT(*) of orders double counts a customer who orders more than once in a month, overstating retention (and it can exceed 1)."},
+    {"name": "guest-not-a-cohort", "kills": "Orders with NULL customer_id (guests) belong to no cohort and must be excluded; the join to the cohort table drops them naturally, but a COALESCE into a NULL mega-cohort would wrongly count them."},
+    {"name": "correlated-per-cell-tle", "kills": "Filling each cohort/offset cell with correlated subqueries over ~228k orders is quadratic and exceeds the time limit; the reference computes every cell in one grouped pass. TLE for naive/3_correlated_per_cell_tle.sql."}
+  ],
+  "notes": "naive/3_correlated_per_cell_tle.sql is the designated TLE-slow solution: correct on small fixtures, times out at Black scale. The two WA naives fail on correctness at sample scale (offset arithmetic and denominator). Month parts are extracted via SUBSTR + CAST AS INTEGER; only populated cells (active_customers >= 1) are emitted."
+}

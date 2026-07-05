@@ -1,0 +1,16 @@
+{
+  "slug": "tickforge-rolling-inventory",
+  "universe": "tickforge",
+  "belt": "purple",
+  "title": "Rolling Inventory & Realized Cash",
+  "concepts": ["window-functions", "running-total", "signed-aggregation", "deterministic-ordering", "tie-break"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["tickforge-session-notional"],
+  "provenance": "tickforge/P2",
+  "landmines": [
+    {"name": "running-total-timestamp-ties", "kills": "naive/1_orderby_time_only.sql"},
+    {"name": "fill-id-not-chronological", "kills": "naive/2_orderby_fillid.sql"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "tickforge-vwap-slippage",
+  "universe": "tickforge",
+  "belt": "black",
+  "title": "Best-Execution VWAP Slippage",
+  "concepts": ["as-of-join", "deduplication", "vwap", "window-functions", "rank-vs-rownumber", "guarded-division"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["tickforge-effective-spread"],
+  "provenance": "tickforge/Bk1",
+  "landmines": [
+    {"name": "duplicate-fills-not-deduped", "kills": "naive/1_no_dedup.sql"},
+    {"name": "dirty-quote-arrival-mid", "kills": "naive/2_dirty_mid.sql"},
+    {"name": "rownumber-drops-tied-twin", "kills": "naive/3_rownumber_rank.sql"},
+    {"name": "correlated-asof-tle", "kills": "naive/4_correlated_asof_tle.sql"}
+  ],
+  "notes": "naive/1_no_dedup and naive/4_correlated_asof_tle match the reference on the mild visible sample (which has no injected duplicate fills and is tiny). They fail on the hidden black fixture: naive 1 as WA (duplicate fills inflate volume/VWAP under the full-landmine regime), naive 4 as TLE (per-fill correlated quote scan over ~2M fills). naive 2 (dirty mid) and naive 3 (ROW_NUMBER) diverge already on the visible sample. Reference uses no LIMIT/TOP and is portable to all five engines."
+}

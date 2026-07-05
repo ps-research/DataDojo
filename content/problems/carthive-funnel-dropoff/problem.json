@@ -1,0 +1,19 @@
+{
+  "slug": "carthive-funnel-dropoff",
+  "universe": "carthive",
+  "belt": "black",
+  "title": "Sessionized Funnel Drop-off by Channel",
+  "concepts": ["sessionization", "funnel-analysis", "stage-hierarchy-max", "event-dedup", "out-of-order-events", "conditional-aggregation", "left-join", "coalesce-null-bucket", "safe-division", "nullif"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["carthive-conversion-by-channel"],
+  "provenance": "carthive:Bk1",
+  "landmines": [
+    {"name": "out-of-order-events", "kills": "Reading a session's outcome as the event with the latest timestamp misclassifies inverted sessions (purchase logged before checkout), undercounting purchases. Deepest stage must be MAX over funnel ranks, ignoring timestamp order. Kills naive/1_last_event_by_ts.sql."},
+    {"name": "duplicate-events", "kills": "Counting event rows per stage double-counts double-fired (duplicate) events; the metric is distinct sessions reaching a stage, computed at the session grain. Kills naive/2_count_event_rows.sql."},
+    {"name": "correlated-subquery-tle", "kills": "Computing each session's deepest stage with a correlated subquery over the ~2.2M-row events table is quadratic and exceeds the time limit; the single grouped pass in the reference is linear. TLE for naive/3_correlated_deepest_tle.sql."},
+    {"name": "anonymous-and-divzero", "kills": "Anonymous (NULL customer) sessions must fold into 'unknown', and a stage with zero sessions makes its downstream conversion undefined (NULL via NULLIF), not a division-by-zero error or a spurious 0."}
+  ],
+  "notes": "naive/3_correlated_deepest_tle.sql is the designated TLE-slow solution: it returns the correct answer on small fixtures and fails only by timing out at Black scale (~2.2M events). The two WA naives fail on correctness at sample scale. Deepest stage uses the funnel hierarchy, never event_ts, so out-of-order sessions are classified correctly."
+}

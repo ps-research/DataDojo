@@ -1,0 +1,4 @@
+{
+  "visible": {"seed": 42, "scale": "sample"},
+  "hidden": {"seed": 3101, "scale": "blue"}
+}

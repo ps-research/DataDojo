@@ -1,0 +1,14 @@
+{
+  "slug": "carthive-orders-by-month",
+  "universe": "carthive",
+  "belt": "blue",
+  "title": "Order Volume, Month by Month",
+  "concepts": ["date-bucketing", "string-slice", "count-star", "group-by", "order-by", "null-awareness"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "carthive:B2",
+  "landmines": [],
+  "notes": "Month is bucketed from a 'YYYY-MM' string slice of order_ts, which both keeps the year (2022-01 != 2023-01) and sorts chronologically. COUNT(*) counts order rows including guest (NULL customer_id) orders; COUNT(customer_id) would undercount guests."
+}

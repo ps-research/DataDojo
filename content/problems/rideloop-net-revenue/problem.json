@@ -1,0 +1,19 @@
+{
+  "slug": "rideloop-net-revenue",
+  "universe": "rideloop",
+  "belt": "black",
+  "title": "Promotion-Adjusted Net Revenue by Zone and Vehicle Class",
+  "concepts": ["grain-control", "pre-aggregation", "many-to-many", "fan-out-avoidance", "duplicate-dedup", "null-in-not-in", "left-join", "conditional-aggregation"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["rideloop-acceptance-rate", "rideloop-surge-profile"],
+  "provenance": "rideloop:Bk1",
+  "landmines": [
+    {"name": "promotion-join-fanout", "kills": "Joining trips to the M:N trip_promotions and summing (fare - discount) fans out fare_amount: a multi-promo trip contributes its fare once per promo row, inflating net_revenue for every group that contains multi-promo trips. Fare must be aggregated at trip grain (promotions collapsed first)."},
+    {"name": "duplicate-promo-over-discount", "kills": "A (trip_id, promo_id) pair can be logged twice (double application that only discounted the rider once). Summing raw trip_promotions rows subtracts that discount twice; dedup to one row per (trip_id, promo_id) before summing."},
+    {"name": "null-in-not-in-reachable", "kills": "The reachability filter written as `pickup_zone_id NOT IN (SELECT dropoff_zone_id FROM trips)` collapses to zero rows because dropoff_zone_id is NULL on non-completed rows; the guard `IN (... WHERE dropoff_zone_id IS NOT NULL)` is required."},
+    {"name": "correlated-subquery-tle", "kills": "Per-trip correlated subqueries for the discount total and penetration produce the right numbers on small inputs but rescan trip_promotions once per completed trip, blowing the time limit at 3M trips while the set-based reference stays well under it."}
+  ],
+  "notes": "Black: grain control is the crux. Reference collapses trip_promotions to trip grain (dedup by (trip_id,promo_id), then sum per trip) before joining, keeping every join into trips 1:1. Fully portable (CTEs, LEFT JOIN, COALESCE, SUM(CASE), 1.0* division, NOT IN/IN); mssql-compatible as written. Note the sample already contains stacked same-(trip_id,promo_id) applications (trips 78, 111, 177), so the dedup matters even on the visible fixture. Self-verified on SQLite: reference correct; naive 1 (fan-out) diverges on net_revenue for multi-promo groups; naive 2 (correlated) is TLE at 3M and also WA on the sample (3 rows differ, over-discounts the doubled pairs); naive 3 (unguarded NOT IN) returns zero rows."
+}

@@ -7,10 +7,11 @@ midpoint of the top-of-book quote in effect at (or just before) the fill. A fill
 that executes strictly **inside** the quoted spread (`bid < fill_price < ask`)
 earned **price improvement**.
 
-The market-data feed is noisy. A valid mid requires a quote with **both** a bid and
-an ask present and `ask > bid`. Quotes with a NULL side, or a crossed/locked book
-(`bid >= ask`), or a one-sided (size-0) market are **not** a usable mid and must be
-skipped when choosing the prevailing quote.
+The market-data feed is noisy. A **valid** quote (a usable mid) requires **all** of:
+a bid price and an ask price both present, `ask_price > bid_price` (not crossed or
+locked), and **both sizes positive** (`bid_size > 0 AND ask_size > 0` — a size-0 side
+is a one-sided market, not a real two-sided quote). Quotes failing any of these are
+skipped when choosing the prevailing quote. The mid is `(bid_price + ask_price) / 2`.
 
 ## Task
 
@@ -51,9 +52,9 @@ never-traded names (`AAJ`, `AAK`) never appear.
 
 | symbol | n_fills | avg_effective_spread | price_improve_share |
 |---|---|---|---|
-| AAB | 76 | 1.369342 | 0.026316 |
+| AAB | 76 | 1.395395 | 0.026316 |
 | AAC | 76 | 2.876336 | 0.0 |
-| AAD | 3 | 2.336667 | 0.0 |
+| AAD | 3 | 7.94 | 0.0 |
 | AAE | 5 | 5.59698 | 0.0 |
 | AAF | 5 | 0.658 | 0.0 |
 | AAG | 39 | 2.782051 | 0.128205 |

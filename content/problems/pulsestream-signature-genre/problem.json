@@ -1,0 +1,16 @@
+{
+  "slug": "pulsestream-signature-genre",
+  "universe": "pulsestream",
+  "belt": "purple",
+  "title": "Each Listener's Signature Genre",
+  "concepts": ["group-by", "window-ranking", "row-number", "deterministic-tiebreak", "null-filtering", "top-per-group"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["pulsestream-breakout-tracks"],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "ranking-ties-multiple-rows", "kills": "RANK()/DENSE_RANK() = 1, or a correlated MAX(play_count) subquery, returns two-or-more rows for a listener whose top two genres tie, breaking the one-row-per-listener contract; only ROW_NUMBER with a full tiebreak yields a single signature."},
+    {"name": "null-genre-ranked-as-genre", "kills": "Keeping NULL-genre plays and ranking them as an '(uncategorized)' bucket lets uncategorized win a listener's signature; NULL genre must be excluded before ranking."}
+  ]
+}

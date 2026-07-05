@@ -1,0 +1,17 @@
+{
+  "slug": "metricforge-funnel-conversion",
+  "universe": "metricforge",
+  "belt": "purple",
+  "title": "Session Upgrade-Funnel Conversion by Channel",
+  "concepts": ["conditional-aggregation", "event-time-ordering", "funnel-analysis", "left-join", "null-group", "nullif-guard", "group-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": false,
+  "points": 40,
+  "prerequisites": ["metricforge-feature-adoption"],
+  "provenance": "metricforge:P1",
+  "landmines": [
+    {"name": "funnel-ordered-by-event-time", "kills": "naive/1_unordered_funnel.sql -- crediting a step whenever the event merely exists (or ordering by event_id / insertion order) counts out-of-order sessions, where a clock-skewed step timestamp precedes an earlier step; a step counts only if its earliest event_ts is at or after the earlier step's earliest event_ts."},
+    {"name": "null-channel-dropped", "kills": "naive/2_drop_null_channel.sql -- referral_channel IS NULL is a real segment (geo/attribution miss); WHERE referral_channel IS NOT NULL (or an equality/IN filter) silently drops it, and a bare step_n/step_(n-1) with no NULLIF divides by zero on a channel with zero funnel entrants."}
+  ],
+  "notes": "Per session, the earliest event_ts of each funnel step is taken with MIN(CASE WHEN event_type=... THEN event_ts END); a session reaches a step only when the chain of earliest step times is monotonically non-decreasing (view_plans <= start_checkout <= enter_payment <= purchase). Bounce/empty sessions (no events) and no-funnel sessions contribute 0 to every step but their channel still appears. Rates are step_n / step_(n-1) guarded with NULLIF(denominator,0) so a zero-entrant channel yields NULL, not an error. The NULL referral_channel segment is kept. orderMatters=false: the judge sorts, so the NULL group's sort position is not engine-dependent. The out-of-order landmine (naive/1) is sparse and may not surface on the tiny sample, but is proven on the purple-scale fixture; naive/2 is proven on the sample. Naives are the SQLite-runnable forms; the divergences are engine-independent."
+}

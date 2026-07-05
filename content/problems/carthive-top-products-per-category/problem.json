@@ -1,0 +1,18 @@
+{
+  "slug": "carthive-top-products-per-category",
+  "universe": "carthive",
+  "belt": "purple",
+  "title": "Top 3 Products per Category by Units Sold",
+  "concepts": ["window-function", "row-number", "partition-by", "tie-break", "top-n-per-group", "group-by", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["carthive-gmv-by-category"],
+  "provenance": "carthive:P3",
+  "landmines": [
+    {"name": "ranking-ties-extra-rows", "kills": "RANK() (or 'count how many sold more') gives tied products the same rank, so a tie at the cutoff returns more than three rows. ROW_NUMBER with an explicit product_id tie-break returns exactly three. Kills naive/1_rank_ties_extra_rows.sql and naive/2_correlated_count_greater.sql."},
+    {"name": "correlated-subquery-tle", "kills": "Ranking each product by a correlated COUNT of products that sold more is O(n^2) over the per-product aggregate and times out at Purple scale, while the windowed reference is linear. TLE for naive/2_correlated_count_greater.sql."},
+    {"name": "never-sold-products", "kills": "Products with no order_items must be absent. LEFT-joining products to sales and ranking would surface never-sold products with zero units."}
+  ],
+  "notes": "naive/2_correlated_count_greater.sql is the designated TLE-slow solution: correct-shaped but quadratic. Deterministic tie-break (units_sold DESC, product_id ASC) makes the top three objectively reproducible. Window functions require MySQL 8+."
+}

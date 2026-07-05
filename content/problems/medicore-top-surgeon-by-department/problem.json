@@ -1,0 +1,17 @@
+{
+  "slug": "medicore-top-surgeon-by-department",
+  "universe": "medicore",
+  "belt": "purple",
+  "title": "Top Surgeon by Billable Volume per Department (ties kept)",
+  "concepts": ["multi-table-join", "filter", "group-by", "count-star", "window-function", "rank", "ties", "partition-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["medicore-admissions-by-department"],
+  "provenance": "medicore:P2",
+  "landmines": [
+    {"name": "ranking-ties-dropped", "kills": "naive/1_row_number_drops_ties.sql -- ROW_NUMBER() ... = 1 keeps exactly one surgeon per department and silently discards co-leaders who tie for the top count; RANK()/DENSE_RANK() keeps them all"},
+    {"name": "missing-billable-filter", "kills": "naive/2_forgot_billable_filter.sql -- counting all procedures instead of only is_billable = 1 changes the counts and, in some departments, the winning surgeon"}
+  ],
+  "notes": "Department is attached via the procedure's admission's admitting ward (procedures -> admissions -> wards). Volume is COUNT(*) over billable procedure rows (each procedure counts, even several within one admission), filtered to is_billable = 1 AND primary_surgeon_id IS NOT NULL. Ties for the top count within a department are all kept via RANK() = 1. Fully portable (window function + COUNT); no per-engine override needed."
+}

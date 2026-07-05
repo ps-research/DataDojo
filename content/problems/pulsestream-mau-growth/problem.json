@@ -1,0 +1,17 @@
+{
+  "slug": "pulsestream-mau-growth",
+  "universe": "pulsestream",
+  "belt": "purple",
+  "title": "Monthly Active Listeners and Growth",
+  "concepts": ["count-distinct", "date-bucketing", "window-lag", "growth-rate", "null-guard", "group-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["pulsestream-breakout-tracks"],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "count-star-inflation", "kills": "COUNT(*) per month counts duplicate retry events and repeat listens by the same person, inflating the active-listener metric; the metric is COUNT(DISTINCT user_id)."},
+    {"name": "first-month-growth-not-null", "kills": "The earliest month has no prior month, so month-over-month growth is undefined (NULL); reporting 0.0 there, or dropping the row via an inner self-join, is wrong."}
+  ],
+  "notes": "Month is bucketed from played_at (string slice), never from the non-chronological play_id. Duplicate events and out-of-order timestamps do not change COUNT(DISTINCT user_id)."
+}

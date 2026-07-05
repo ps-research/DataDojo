@@ -1,0 +1,18 @@
+{
+  "slug": "tickforge-position-recon",
+  "universe": "tickforge",
+  "belt": "black",
+  "title": "Position Reconstruction & Mark-to-Market",
+  "concepts": ["window-functions", "split-adjustment", "deduplication", "month-end-detection", "as-of-mark", "reconciliation"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql"],
+  "orderMatters": true,
+  "points": 70,
+  "prerequisites": ["tickforge-rolling-inventory"],
+  "provenance": "tickforge/Bk2",
+  "landmines": [
+    {"name": "no-split-rebasing", "kills": "naive/1_no_split_rebasing.sql"},
+    {"name": "duplicate-fills-and-double-posted-snapshots", "kills": "naive/2_no_dedup.sql"},
+    {"name": "calendar-month-end-detection", "kills": "naive/3_calendar_month_end.sql"}
+  ],
+  "notes": "Reference is portable across sqlite/duckdb/postgres/mysql. mssql deviation: natural log is LOG(x) in T-SQL, so replace LN(...) with LOG(...) (single-token change) -- mssql omitted from the engines list on that basis. naive/2_no_dedup matches the reference on the mild visible sample (no injected duplicate fills or double-posted snapshots) and fails only on the hidden black fixture; naive/1 (splits) and naive/3 (month-end) already diverge on the visible sample. Split-factor product uses EXP(SUM(LN(mult))); month-end reporting dates are the real month-end sessions on which positions snapshots land (portable, no calendar arithmetic)."
+}

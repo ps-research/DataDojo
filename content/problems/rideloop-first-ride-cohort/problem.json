@@ -1,0 +1,18 @@
+{
+  "slug": "rideloop-first-ride-cohort",
+  "universe": "rideloop",
+  "belt": "purple",
+  "title": "Time-to-First-Ride by Signup Cohort",
+  "concepts": ["window-function", "row-number", "first-per-group", "date-diff", "cohort", "month-bucket", "tie-break"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": [],
+  "provenance": "rideloop:P2",
+  "landmines": [
+    {"name": "no-completed-filter", "kills": "Using MIN(request_ts) over all statuses treats a rider's earliest cancelled/no_driver request as their 'first ride', pulling averages down and counting riders who never actually completed a ride."},
+    {"name": "first-by-trip-id-not-time", "kills": "Picking the first completed trip by MIN(trip_id) / ORDER BY trip_id is wrong because trip_id is not monotonic with request_ts; the earliest-id completed trip is often not the earliest-time one, so the days gap is taken from the wrong row (20 riders affected on the visible sample)."},
+    {"name": "request-ts-ties", "kills": "At purple+ scale many rows share an exact request_ts second for a rider; ORDER BY request_ts alone leaves 'first' non-deterministic, so the tiebreak on trip_id is required."}
+  ],
+  "notes": "Purple: first-per-group via ROW_NUMBER + a cohort average with a date difference. Portable pieces: SUBSTR month key, ROW_NUMBER window. The whole-day gap is the one dialect-specific piece: reference.sql is SQLite (julianday); reference.postgres.sql (date subtraction), reference.mysql.sql (DATEDIFF), reference.duckdb.sql (DATE_DIFF) are provided. mssql: month via FORMAT(signup_date,'yyyy-MM'), gap via DATEDIFF(day, signup_date, request_ts). Only the SQLite reference is self-verified in-sandbox; the day-count is identical (integer days) across engines."
+}
