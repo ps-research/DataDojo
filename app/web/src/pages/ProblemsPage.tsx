@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../lib/api";
-import { BeltBadge, BELT_META, Pill } from "../components/Badges";
+import { BeltBadge, BELT_META, CollectionBadge } from "../components/Badges";
 import { CheckIcon, LockIcon } from "../components/icons";
+import { collectionKey, collectionLabel } from "../lib/collections";
 
 interface ProblemItem {
   slug: string;
@@ -18,13 +19,25 @@ interface ProblemItem {
 }
 
 const BELT_ORDER = ["white", "blue", "purple", "black", "red"];
+const BELT_RANK: Record<string, number> = { white: 0, blue: 1, purple: 2, black: 3, red: 4 };
+
+type SortKey = "number" | "difficulty" | "points-desc" | "points-asc" | "title" | "solved";
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "number", label: "Default" },
+  { key: "difficulty", label: "Difficulty" },
+  { key: "points-desc", label: "Points: high to low" },
+  { key: "points-asc", label: "Points: low to high" },
+  { key: "title", label: "Title A-Z" },
+  { key: "solved", label: "Unsolved first" },
+];
 
 export function ProblemsPage() {
   const [problems, setProblems] = useState<ProblemItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [belt, setBelt] = useState<string>("");
-  const [universe, setUniverse] = useState<string>("");
+  const [belt, setBelt] = useState("");
+  const [collection, setCollection] = useState("");
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>("number");
 
   useEffect(() => {
     void api<{ problems: ProblemItem[] }>("/api/problems")
@@ -32,20 +45,31 @@ export function ProblemsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const universes = useMemo(
-    () => [...new Set(problems.map((p) => p.universe).filter(Boolean))].sort(),
-    [problems]
-  );
-  const filtered = useMemo(
-    () =>
-      problems.filter(
-        (p) =>
-          (!belt || p.belt === belt) &&
-          (!universe || p.universe === universe) &&
-          (!query || p.title.toLowerCase().includes(query.toLowerCase()))
-      ),
-    [problems, belt, universe, query]
-  );
+  // collections present, ordered: universes, then Tutorial/Python/R
+  const collections = useMemo(() => {
+    const keys = new Set(problems.map((p) => collectionKey(p)));
+    const order = ["pulsestream", "carthive", "rideloop", "medicore", "metricforge", "tickforge", "__tutorial", "__python", "__r"];
+    return order.filter((k) => keys.has(k));
+  }, [problems]);
+
+  const filtered = useMemo(() => {
+    const out = problems.filter(
+      (p) =>
+        (!belt || p.belt === belt) &&
+        (!collection || collectionKey(p) === collection) &&
+        (!query || p.title.toLowerCase().includes(query.toLowerCase()))
+    );
+    const cmp: Record<SortKey, (a: ProblemItem, b: ProblemItem) => number> = {
+      number: (a, b) => a.number - b.number,
+      difficulty: (a, b) => BELT_RANK[a.belt] - BELT_RANK[b.belt] || a.number - b.number,
+      "points-desc": (a, b) => b.points - a.points || a.number - b.number,
+      "points-asc": (a, b) => a.points - b.points || a.number - b.number,
+      title: (a, b) => a.title.localeCompare(b.title),
+      solved: (a, b) => Number(a.solved) - Number(b.solved) || a.number - b.number,
+    };
+    return [...out].sort(cmp[sort]);
+  }, [problems, belt, collection, query, sort]);
+
   const solvedCount = problems.filter((p) => p.solved).length;
   const pct = problems.length ? Math.round((solvedCount / problems.length) * 100) : 0;
 
@@ -64,28 +88,32 @@ export function ProblemsPage() {
           <div className="h-1.5 w-40 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
             <div className="h-full rounded-full bg-brand transition-all" style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {solvedCount} / {problems.length} solved
-          </span>
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">{solvedCount} / {problems.length} solved</span>
         </div>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center gap-2">
-        <button onClick={() => setBelt("")} className={chip(!belt)}>All</button>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button onClick={() => setBelt("")} className={chip(!belt)}>All belts</button>
         {BELT_ORDER.map((b) => (
           <button key={b} onClick={() => setBelt(belt === b ? "" : b)} className={chip(belt === b)}>
             {BELT_META[b].label}
           </button>
         ))}
+      </div>
+
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        <button onClick={() => setCollection("")} className={chip(!collection)}>All collections</button>
+        {collections.map((k) => (
+          <button key={k} onClick={() => setCollection(collection === k ? "" : k)} className={chip(collection === k)}>
+            {collectionLabel(k)}
+          </button>
+        ))}
         <div className="ml-auto flex items-center gap-2">
-          {universes.length > 0 && (
-            <select className="input w-auto py-2" value={universe} onChange={(e) => setUniverse(e.target.value)}>
-              <option value="">All universes</option>
-              {universes.map((u) => (
-                <option key={u} value={u}>{u}</option>
-              ))}
-            </select>
-          )}
+          <select className="input w-auto py-2" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
+            {SORTS.map((s) => (
+              <option key={s.key} value={s.key}>Sort: {s.label}</option>
+            ))}
+          </select>
           <input className="input w-40 py-2" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
       </div>
@@ -109,14 +137,14 @@ export function ProblemsPage() {
                 {p.solved ? (
                   <span className="text-emerald-500" title="Solved"><CheckIcon /></span>
                 ) : p.locked ? (
-                  <span className="text-zinc-400" title="Locked - solve its prerequisite first"><LockIcon /></span>
+                  <span className="text-zinc-400"><LockIcon /></span>
                 ) : (
                   <span className="font-mono text-xs text-zinc-300 dark:text-zinc-600">{p.number}</span>
                 )}
               </span>
               <span className="min-w-0 flex-1 truncate text-sm">{p.title}</span>
-              {p.universe && <Pill>{p.universe}</Pill>}
-              <span className="hidden font-mono text-xs text-zinc-400 sm:inline">{p.points} pts</span>
+              <CollectionBadge collectionKey={collectionKey(p)} />
+              <span className="hidden w-16 text-right font-mono text-xs text-zinc-400 sm:inline">{p.points} pts</span>
               <span className="w-14 text-right"><BeltBadge belt={p.belt} /></span>
             </Link>
           ))}

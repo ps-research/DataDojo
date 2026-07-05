@@ -5,8 +5,9 @@ import { api, getAccessToken } from "../lib/api";
 import { useTheme } from "../lib/theme";
 import { Split } from "../components/Split";
 import { Markdown } from "../components/Markdown";
-import { BeltBadge, Pill, VerdictBadge } from "../components/Badges";
+import { BeltBadge, Pill, VerdictBadge, CollectionBadge } from "../components/Badges";
 import { CollapseIcon, ExpandIcon } from "../components/icons";
+import { collectionKey } from "../lib/collections";
 import { engineLabel } from "../lib/engines";
 import { ResultTable, type ResultSet } from "../components/ResultTable";
 
@@ -21,6 +22,7 @@ interface ProblemDetail {
   number: number;
   belt: string;
   universe: string;
+  category: string;
   statementMd: string;
   schemaPreview: string;
   concepts: string[];
@@ -227,7 +229,7 @@ export function SolvePage() {
           {problem.number}. {problem.title}
         </h1>
         <BeltBadge belt={problem.belt} />
-        {problem.universe && <Pill>{problem.universe}</Pill>}
+        <CollectionBadge collectionKey={collectionKey(problem)} />
         <span className="ml-auto text-xs text-zinc-400">{problem.points} pts</span>
       </div>
 

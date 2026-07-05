@@ -38,3 +38,9 @@ export function Pill({ children }: { children: ReactNode }) {
     </span>
   );
 }
+
+import { COLLECTIONS } from "../lib/collections";
+export function CollectionBadge({ collectionKey }: { collectionKey: string }) {
+  const c = COLLECTIONS[collectionKey] ?? COLLECTIONS.__tutorial;
+  return <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-medium ${c.cls}`}>{c.label}</span>;
+}
