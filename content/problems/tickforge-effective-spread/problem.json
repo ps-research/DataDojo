@@ -1,0 +1,16 @@
+{
+  "slug": "tickforge-effective-spread",
+  "universe": "tickforge",
+  "belt": "purple",
+  "title": "Effective Spread vs Mid",
+  "concepts": ["as-of-join", "window-functions", "case-aggregation", "null-handling", "group-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 40,
+  "prerequisites": ["tickforge-session-notional"],
+  "provenance": "tickforge/P1",
+  "landmines": [
+    {"name": "quote-fanout-day-join", "kills": "naive/1_dayjoin_fanout.sql"},
+    {"name": "dirty-quote-mid-no-validity-filter", "kills": "naive/2_no_validity_filter.sql"}
+  ]
+}

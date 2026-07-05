@@ -1,0 +1,13 @@
+{
+  "slug": "tickforge-session-notional",
+  "universe": "tickforge",
+  "belt": "blue",
+  "title": "Session Notional Leaderboard",
+  "concepts": ["inner-join", "group-by", "sum-aggregation", "count", "order-by", "date-filter"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "tickforge/B1",
+  "landmines": []
+}

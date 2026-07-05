@@ -4,6 +4,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import path from "path";
+import fs from "fs";
 import { env } from "./config/env.js";
 import { errorHandler, notFound } from "./middleware/error.js";
 import { availableEngines } from "./judge/registry.js";
@@ -31,6 +33,14 @@ export function createApp(): express.Express {
   app.use("/api/problems", problemRoutes);
   app.use("/api/submissions", submissionRoutes);
   app.use("/api/leaderboard", leaderboardRoutes);
+
+  // Optionally serve the built SPA (single-process deployments / previews).
+  // In the full compose deployment nginx does this instead.
+  const staticDir = process.env.SERVE_STATIC;
+  if (staticDir && fs.existsSync(staticDir)) {
+    app.use(express.static(staticDir));
+    app.get(/^(?!\/api\/).*/, (_req, res) => res.sendFile(path.resolve(staticDir, "index.html")));
+  }
 
   app.use(notFound);
   app.use(errorHandler);

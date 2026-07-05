@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Calm base: soft background, comfortable line-height, no visual noise. */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply bg-stone-50 text-stone-800 dark:bg-stone-950 dark:text-stone-200;
+  }
+  ::selection {
+    @apply bg-accent/20;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-lg border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent/60 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent/90;
+  }
+  .btn-ghost {
+    @apply btn text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800;
+  }
+  .input {
+    @apply w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm
+           placeholder:text-stone-400 focus:border-accent focus:outline-none
+           dark:border-stone-700 dark:bg-stone-900;
+  }
+}
+
+/* Markdown statement rendering: restrained typography */
+.statement h1, .statement h2, .statement h3 { @apply mt-5 mb-2 font-semibold text-stone-900 dark:text-stone-100; }
+.statement h1 { @apply text-lg; }
+.statement h2 { @apply text-base; }
+.statement p { @apply my-2.5 leading-relaxed; }
+.statement code { @apply rounded bg-stone-100 px-1 py-0.5 font-mono text-[0.85em] dark:bg-stone-800; }
+.statement pre { @apply my-3 overflow-x-auto rounded-md bg-stone-100 p-3 dark:bg-stone-800; }
+.statement pre code { @apply bg-transparent p-0; }
+.statement table { @apply my-3 w-auto border-collapse text-sm; }
+.statement th, .statement td { @apply border border-stone-200 px-2.5 py-1.5 text-left dark:border-stone-700; }
+.statement th { @apply bg-stone-100 font-medium dark:bg-stone-800; }
+.statement ul, .statement ol { @apply my-2.5 ml-5 list-disc; }
+.statement ol { @apply list-decimal; }

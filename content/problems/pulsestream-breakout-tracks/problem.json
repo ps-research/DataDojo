@@ -1,0 +1,16 @@
+{
+  "slug": "pulsestream-breakout-tracks",
+  "universe": "pulsestream",
+  "belt": "blue",
+  "title": "Breakout Tracks of the Month",
+  "concepts": ["inner-join", "group-by", "count", "order-by", "limit", "deterministic-tiebreak"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "ranking-ties-at-cutoff", "kills": "Ordering by play count alone leaves the 10th/11th boundary undefined when several tracks tie; the fixed tiebreak (title, then track_id) makes the top-10 unique."},
+    {"name": "return-title-not-id", "kills": "Returning only track_id, or forgetting the artist join, produces an unreadable shelf; a human-readable track title and artist name are required."}
+  ]
+}

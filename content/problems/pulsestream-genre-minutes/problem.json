@@ -1,0 +1,17 @@
+{
+  "slug": "pulsestream-genre-minutes",
+  "universe": "pulsestream",
+  "belt": "blue",
+  "title": "Listening Minutes by Genre",
+  "concepts": ["inner-join", "sum", "unit-conversion", "coalesce-null-bucket", "group-by", "order-by"],
+  "engines": ["sqlite", "duckdb", "postgres", "mysql", "mssql"],
+  "orderMatters": true,
+  "points": 20,
+  "prerequisites": [],
+  "provenance": "pulsestream",
+  "landmines": [
+    {"name": "ms-vs-seconds-unit", "kills": "Dividing ms_played by 60 (treating milliseconds as seconds) overstates minutes 1000x; minutes are ms_played / 60000."},
+    {"name": "null-genre-dropped", "kills": "Filtering genre IS NOT NULL silently deletes the uncategorized catalog; NULL genre must surface as its own labelled bucket."},
+    {"name": "null-ms-as-zero", "kills": "SUM ignores NULL ms_played by design; treating NULL as 0 is harmless for the sum but the solver must not extend that habit elsewhere."}
+  ]
+}
