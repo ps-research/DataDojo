@@ -8,6 +8,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { ProblemsPage } from "./pages/ProblemsPage";
 import { SolvePage } from "./pages/SolvePage";
 import { LeaderboardPage } from "./pages/LeaderboardPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { SettingsPage } from "./pages/SettingsPage";
 
 function BootScreen() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
           <Route path="/problems" element={<Gated><ProblemsPage /></Gated>} />
           <Route path="/problems/:slug" element={<Gated><SolvePage /></Gated>} />
           <Route path="/leaderboard" element={<Gated><LeaderboardPage /></Gated>} />
+          <Route path="/profile" element={<Gated><ProfilePage /></Gated>} />
+          <Route path="/settings" element={<Gated><SettingsPage /></Gated>} />
           <Route path="*" element={<Navigate to="/problems" replace />} />
         </Routes>
       </AuthProvider>

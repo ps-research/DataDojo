@@ -37,9 +37,12 @@ export function Navbar() {
           </button>
           {user && (
             <div className="flex items-center gap-3 pl-1.5">
-              <span className="hidden text-sm text-zinc-500 dark:text-zinc-400 sm:inline">
+              <Link
+                to="/profile"
+                className="hidden text-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 sm:inline"
+              >
                 {user.name} · <span className="font-mono text-zinc-700 dark:text-zinc-300">{user.score}</span>
-              </span>
+              </Link>
               <button onClick={() => void logout()} className="btn-ghost text-sm">Sign out</button>
             </div>
           )}

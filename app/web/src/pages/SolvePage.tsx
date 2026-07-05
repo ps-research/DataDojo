@@ -7,6 +7,8 @@ import { Split } from "../components/Split";
 import { Markdown } from "../components/Markdown";
 import { BeltBadge, Pill, VerdictBadge } from "../components/Badges";
 import { CollapseIcon, ExpandIcon } from "../components/icons";
+import { engineLabel } from "../lib/engines";
+import { ResultTable, type ResultSet } from "../components/ResultTable";
 
 interface EngineOption {
   engine: string;
@@ -54,6 +56,10 @@ export function SolvePage() {
   const [focus, setFocus] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<VerdictEvent | null>(null);
+  const [running, setRunning] = useState(false);
+  const [runResult, setRunResult] = useState<(ResultSet & { error?: string; runtimeMs?: number }) | null>(null);
+  const [customData, setCustomData] = useState("");
+  const [showCustom, setShowCustom] = useState(false);
   const [history, setHistory] = useState<SubmissionRow[]>([]);
   const [tab, setTab] = useState<"statement" | "submissions">("statement");
   const esRef = useRef<EventSource | null>(null);
@@ -106,6 +112,7 @@ export function SolvePage() {
     localStorage.setItem(codeKey(engine), code);
     setSubmitting(true);
     setResult(null);
+    setRunResult(null);
     try {
       const { id } = await api<{ id: string }>("/api/submissions", {
         method: "POST",
@@ -137,6 +144,47 @@ export function SolvePage() {
       setSubmitting(false);
     }
   }, [problem, engine, code, submitting, codeKey]);
+
+  const run = useCallback(async () => {
+    if (!problem || !engine || running) return;
+    localStorage.setItem(codeKey(engine), code);
+    setRunning(true);
+    setResult(null);
+    setRunResult(null);
+    try {
+      const data = await api<{
+        ok: boolean;
+        columns?: string[];
+        rows?: unknown[][];
+        truncated?: boolean;
+        rowCount?: number;
+        error?: string;
+        runtimeMs: number;
+      }>("/api/submissions/run", {
+        method: "POST",
+        body: JSON.stringify({ slug: problem.slug, engine, code, customFixture: customData || undefined }),
+      });
+      if (data.ok) {
+        setRunResult({
+          columns: data.columns ?? [],
+          rows: data.rows ?? [],
+          truncated: data.truncated,
+          rowCount: data.rowCount,
+          runtimeMs: data.runtimeMs,
+        });
+      } else {
+        setRunResult({ columns: [], rows: [], error: data.error, runtimeMs: data.runtimeMs });
+      }
+    } catch (err) {
+      setRunResult({ columns: [], rows: [], error: err instanceof Error ? err.message : "Run failed" });
+    } finally {
+      setRunning(false);
+    }
+  }, [problem, engine, code, customData, running, codeKey]);
+  const runRef = useRef(run);
+  useEffect(() => {
+    runRef.current = run;
+  }, [run]);
 
   // Ctrl/Cmd+Enter submits from inside the editor
   const editorMount = useCallback(
@@ -240,25 +288,48 @@ export function SolvePage() {
         <select className="input w-auto py-1.5" value={engine} onChange={(e) => switchEngine(e.target.value)}>
           {problem.engines.map((e) => (
             <option key={e.engine} value={e.engine} disabled={!e.available}>
-              {e.engine}
+              {engineLabel(e.engine)}
               {!e.available ? " (offline)" : ""}
             </option>
           ))}
         </select>
         <button
+          onClick={() => setShowCustom((v) => !v)}
+          className={`btn-ghost text-sm ${showCustom ? "bg-zinc-100 dark:bg-zinc-800" : ""}`}
+          title="Provide your own test data to run against"
+        >
+          Custom data
+        </button>
+        <button
           onClick={() => setFocus(!focus)}
           className="btn-ghost h-8 w-8 justify-center p-0"
-          title={focus ? "Exit focus mode (Esc)" : "Focus mode - just you and the editor"}
+          title={focus ? "Exit focus mode (Esc)" : "Focus mode"}
         >
           {focus ? <CollapseIcon /> : <ExpandIcon />}
         </button>
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden text-xs text-zinc-400 md:inline">Ctrl+Enter to submit</span>
-          <button onClick={() => void submit()} disabled={submitting} className="btn-primary">
+          <button onClick={() => void run()} disabled={running || submitting} className="btn-ghost border border-zinc-300 dark:border-zinc-700">
+            {running ? "Running..." : "Run"}
+          </button>
+          <button onClick={() => void submit()} disabled={submitting || running} className="btn-primary">
             {submitting ? "Judging..." : "Submit"}
           </button>
         </div>
       </div>
+
+      {showCustom && (
+        <div className="flex-none border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+          <div className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Custom test data (optional). Replaces the sample when you Run. For SQL, write CREATE/INSERT statements.
+          </div>
+          <textarea
+            className="input h-20 font-mono text-xs"
+            placeholder="CREATE TABLE t (...); INSERT INTO t VALUES (...);"
+            value={customData}
+            onChange={(e) => setCustomData(e.target.value)}
+          />
+        </div>
+      )}
 
       <div className="min-h-0 flex-1">
         <Editor
@@ -281,7 +352,24 @@ export function SolvePage() {
         />
       </div>
 
-      {result && (
+      {runResult && (
+        <div className="max-h-72 flex-none overflow-auto border-t border-zinc-200 dark:border-zinc-800">
+          {runResult.error ? (
+            <div className="whitespace-pre-wrap px-4 py-3 font-mono text-sm text-rose-600 dark:text-rose-400">
+              {runResult.error}
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 border-b border-zinc-100 px-4 py-1.5 text-xs text-zinc-400 dark:border-zinc-800">
+                Run result · {runResult.rowCount ?? runResult.rows.length} rows · {runResult.runtimeMs} ms
+              </div>
+              <ResultTable result={runResult} />
+            </>
+          )}
+        </div>
+      )}
+
+      {result && !runResult && (
         <div
           className={`flex flex-none items-start gap-3 border-t px-4 py-3 text-sm ${
             result.verdict === "AC"

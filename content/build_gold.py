@@ -200,7 +200,7 @@ def main() -> None:
                 "schemaPreview": schema_preview(fixture_sql),
                 "orderMatters": bool(meta.get("orderMatters", False)),
                 "engines": engines,
-                "prerequisites": meta.get("prerequisites", []),
+                "prerequisites": [],  # all problems open (no ladder locks)
                 "provenance": meta.get("provenance", ""),
                 "points": meta.get("points", POINTS.get(meta.get("belt", "white"), 10)),
             })

@@ -13,6 +13,7 @@ import authRoutes from "./routes/auth.routes.js";
 import problemRoutes from "./routes/problem.routes.js";
 import submissionRoutes from "./routes/submission.routes.js";
 import leaderboardRoutes from "./routes/leaderboard.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 export function createApp(): express.Express {
   const app = express();
@@ -33,6 +34,7 @@ export function createApp(): express.Express {
   app.use("/api/problems", problemRoutes);
   app.use("/api/submissions", submissionRoutes);
   app.use("/api/leaderboard", leaderboardRoutes);
+  app.use("/api/users", userRoutes);
 
   // Optionally serve the built SPA (single-process deployments / previews).
   // In the full compose deployment nginx does this instead.

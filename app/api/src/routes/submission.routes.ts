@@ -7,7 +7,8 @@ import { ApiError, asyncHandler } from "../middleware/error.js";
 import { requireAuth, type AuthedRequest } from "../middleware/auth.js";
 import { judgeQueue, verdictChannel } from "../queue/index.js";
 import { makeRedis, redis } from "../config/db.js";
-import { engineAvailable } from "../judge/registry.js";
+import { engineAvailable, getAdapter } from "../judge/registry.js";
+import { env } from "../config/env.js";
 import { ENGINES } from "../types.js";
 
 const router = Router();
@@ -56,6 +57,55 @@ router.post(
     });
     await judgeQueue.add("judge", { submissionId: String(sub._id) }, { removeOnComplete: 100, removeOnFail: 100 });
     res.status(202).json({ id: String(sub._id), status: "queued" });
+  })
+);
+
+// Run (not judged): execute the user's code against the sample fixture, or a
+// custom fixture the user supplies, and return the result table so they can
+// iterate before submitting.
+const runSchema = z.object({
+  slug: z.string().min(1),
+  engine: z.enum(ENGINES),
+  code: z.string().min(1).max(20000),
+  customFixture: z.string().max(50000).optional(),
+});
+
+router.post(
+  "/run",
+  requireAuth,
+  asyncHandler(async (req: AuthedRequest, res) => {
+    const { slug, engine, code, customFixture } = runSchema.parse(req.body);
+    const rlKey = `rl:run:${req.userId}`;
+    const count = await redis.incr(rlKey);
+    if (count === 1) await redis.expire(rlKey, 60);
+    if (count > 40) throw new ApiError(429, "Slow down a moment before running again.");
+
+    const problem = await Problem.findOne({ slug });
+    if (!problem) throw new ApiError(404, "Problem not found");
+    const variant = problem.engines.find((e) => e.engine === engine);
+    if (!variant) throw new ApiError(400, `This problem does not support ${engine}`);
+    if (!engineAvailable(engine)) throw new ApiError(503, `Engine ${engine} is currently unavailable`);
+
+    const fixture = customFixture && customFixture.trim() ? customFixture : variant.fixtureSql;
+    const t0 = Date.now();
+    const result = await getAdapter(engine).run(fixture, code, env.judgeTimeoutMs);
+    const runtimeMs = Date.now() - t0;
+
+    if (result.ok) {
+      const rows = result.result.rows;
+      res.json({
+        ok: true,
+        columns: result.result.columns,
+        rows: rows.slice(0, 200),
+        truncated: rows.length > 200,
+        rowCount: rows.length,
+        runtimeMs,
+      });
+    } else if (result.timeout) {
+      res.json({ ok: false, error: `Time limit exceeded (${env.judgeTimeoutMs} ms).`, runtimeMs });
+    } else {
+      res.json({ ok: false, error: result.error, runtimeMs });
+    }
   })
 );
 
