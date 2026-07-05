@@ -101,4 +101,17 @@ router.post(
   })
 );
 
+router.delete(
+  "/:slug",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const result = await Problem.deleteOne({ slug: req.params.slug });
+    if (result.deletedCount === 0) throw new ApiError(404, "Problem not found");
+    const keys = await redis.keys("prob:list:*");
+    if (keys.length) await redis.del(...keys);
+    res.json({ ok: true });
+  })
+);
+
 export default router;
