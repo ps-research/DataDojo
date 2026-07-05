@@ -163,6 +163,51 @@ class MySQL:
             return Result("error", error=f"{type(ex).__name__}: {str(ex).strip()[:300]}")
 
 
+# --------------------------- SQL Server ------------------------------------
+import pymssql
+class SqlServer:
+    def __init__(self):
+        self.con0 = pymssql.connect(server="127.0.0.1", port=1433, user="SA",
+                                    password="DataDojo!2026", autocommit=True)
+        with self.con0.cursor() as c:
+            c.execute("IF DB_ID('datadojo') IS NULL CREATE DATABASE datadojo")
+            c.execute("SELECT @@VERSION")
+            self.version = c.fetchone()[0].splitlines()[0].strip()
+        self.con = pymssql.connect(server="127.0.0.1", port=1433, user="SA",
+                                   password="DataDojo!2026", database="datadojo",
+                                   autocommit=False)
+        self._load_base()
+    def _load_base(self):
+        from pathlib import Path
+        import sqlite3 as _s
+        kb = _s.connect(str(Path(__file__).resolve().parent.parent / "datadojo_kb.sqlite"))
+        with self.con.cursor() as c:
+            for name, create_sql, seed_sql in kb.execute("select name,create_sql,seed_sql from datasets"):
+                c.execute(f"IF OBJECT_ID('{name.lower()}','U') IS NOT NULL DROP TABLE {name.lower()}")
+                c.execute(create_sql)
+                for stmt in filter(str.strip, seed_sql.split(";")):
+                    c.execute(stmt)
+        self.con.commit(); kb.close()
+    def run(self, sql, datasets=None):
+        try:
+            with self.con.cursor() as c:
+                c.execute(sql)
+                if c.description:
+                    cols = [d[0] for d in c.description]
+                    out = to_csv(cols, c.fetchall())
+                else:
+                    out = f"-- {c.rowcount} row(s) affected"
+            self.con.rollback()               # T-SQL DDL is transactional -> clean
+            return Result("pass", out)
+        except Exception as ex:
+            try: self.con.rollback()
+            except Exception:
+                self.con = pymssql.connect(server="127.0.0.1", port=1433, user="SA",
+                                           password="DataDojo!2026", database="datadojo",
+                                           autocommit=False)
+            return Result("error", error=f"{type(ex).__name__}: {str(ex).strip()[:300]}")
+
+
 ENGINE_VERSIONS = {
     "sqlite": _sqlite_version(),
     "duckdb": _duckdb_version(),
