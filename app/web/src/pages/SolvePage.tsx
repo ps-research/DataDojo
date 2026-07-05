@@ -375,16 +375,32 @@ export function SolvePage() {
           value={code}
           onChange={(v) => setCode(v ?? "")}
           onMount={editorMount as never}
-          theme={theme === "dark" ? "vs-dark" : "light"}
+          theme={theme === "dark" ? "vs-dark" : "vs"}
           options={{
             minimap: { enabled: false },
             fontSize: 14,
-            lineHeight: 1.6,
-            padding: { top: 12 },
+            lineHeight: 1.7,
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+            padding: { top: 14, bottom: 14 },
             scrollBeyondLastLine: false,
-            renderLineHighlight: "none",
-            overviewRulerLanes: 0,
+            renderLineHighlight: "all",
+            lineNumbersMinChars: 3,
+            smoothScrolling: true,
+            cursorBlinking: "smooth",
+            cursorSmoothCaretAnimation: "on",
+            bracketPairColorization: { enabled: true },
+            guides: { indentation: true, bracketPairs: true },
+            matchBrackets: "always",
+            autoClosingBrackets: "always",
+            autoClosingQuotes: "always",
+            autoIndent: "full",
+            formatOnPaste: true,
+            tabSize: 2,
+            quickSuggestions: true,
+            suggestOnTriggerCharacters: true,
             wordWrap: "on",
+            scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 },
+            overviewRulerLanes: 2,
             automaticLayout: true,
           }}
         />
